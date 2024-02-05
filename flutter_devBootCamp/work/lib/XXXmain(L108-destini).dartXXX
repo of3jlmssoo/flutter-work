@@ -1,0 +1,70 @@
+import 'dart:io';
+
+class StoryBrain {
+  int _storyNumber = 0;
+
+  void nextStory(int nextChoice) {
+    List<List<int>> _stories = [
+      [2, 1], // 0
+      [2, 3], // 1
+      [5, 4], // 2
+      [-1, -1], // 3
+      [-1, -1], // 4
+      [-1, -1], // 5
+    ];
+    // storyNumber = nextChoice;
+    storyNumber = _stories[storyNumber][nextChoice - 1];
+  }
+
+  int get storyNumber => _storyNumber;
+  set storyNumber(int sn) {
+    _storyNumber = sn;
+  }
+}
+
+void main() {
+  int currentNumber, nextNumber, choice;
+  StoryBrain mySB = StoryBrain();
+
+  mySB.storyNumber = 0;
+  currentNumber = mySB.storyNumber;
+  choice = 1;
+  mySB.nextStory(choice);
+  nextNumber = mySB.storyNumber;
+  stdout.write('$currentNumber + $choice = $nextNumber \n');
+
+  mySB.storyNumber = 0;
+  currentNumber = mySB.storyNumber;
+  choice = 2;
+  mySB.nextStory(choice);
+  nextNumber = mySB.storyNumber;
+  stdout.write('$currentNumber + $choice = $nextNumber \n');
+
+  mySB.storyNumber = 1;
+  currentNumber = mySB.storyNumber;
+  choice = 1;
+  mySB.nextStory(choice);
+  nextNumber = mySB.storyNumber;
+  stdout.write('$currentNumber + $choice = $nextNumber \n');
+
+  mySB.storyNumber = 1;
+  currentNumber = mySB.storyNumber;
+  choice = 2;
+  mySB.nextStory(choice);
+  nextNumber = mySB.storyNumber;
+  stdout.write('$currentNumber + $choice = $nextNumber \n');
+
+  mySB.storyNumber = 2;
+  currentNumber = mySB.storyNumber;
+  choice = 1;
+  mySB.nextStory(choice);
+  nextNumber = mySB.storyNumber;
+  stdout.write('$currentNumber + $choice = $nextNumber \n');
+
+  mySB.storyNumber = 2;
+  currentNumber = mySB.storyNumber;
+  choice = 2;
+  mySB.nextStory(choice);
+  nextNumber = mySB.storyNumber;
+  stdout.write('$currentNumber + $choice = $nextNumber \n');
+}

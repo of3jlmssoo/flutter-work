@@ -1,0 +1,4 @@
+int calculate() {
+  print('hello world!')
+  return 6 * 7;
+}
