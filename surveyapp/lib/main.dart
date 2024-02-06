@@ -1,30 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
-/// Flutter code sample for [LinearProgressIndicator].
+final log = Logger('MainLogger');
 
-void main() => runApp(const ProgressIndicatorApp());
+void main() {
+  Logger.root.level = Level.ALL; // defaults to Level.INFO
+  Logger.root.onRecord.listen((LogRecord rec) {
+    debugPrint(
+        '[${rec.loggerName}] ${rec.level.name}: ${rec.time}: ${rec.message}');
+  });
 
-class ProgressIndicatorApp extends StatelessWidget {
-  const ProgressIndicatorApp({super.key});
+  runApp(const SurveyApp());
+}
+
+class SurveyApp extends StatelessWidget {
+  const SurveyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: ProgressIndicatorExample(),
+      home: SurveyMenu(),
     );
   }
 }
 
-class ProgressIndicatorExample extends StatefulWidget {
-  const ProgressIndicatorExample({super.key});
+class SurveyMenu extends StatefulWidget {
+  const SurveyMenu({super.key});
 
   @override
-  State<ProgressIndicatorExample> createState() =>
-      _ProgressIndicatorExampleState();
+  State<SurveyMenu> createState() => _SurveyMenuState();
 }
 
-class _ProgressIndicatorExampleState extends State<ProgressIndicatorExample>
-    with TickerProviderStateMixin {
+class _SurveyMenuState extends State<SurveyMenu> with TickerProviderStateMixin {
   late AnimationController controller;
 
   var i = 0.0;
@@ -35,7 +42,7 @@ class _ProgressIndicatorExampleState extends State<ProgressIndicatorExample>
       /// [AnimationController]s can be created with `vsync: this` because of
       /// [TickerProviderStateMixin].
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 120),
     )..addListener(() {
         setState(() {});
       });
@@ -52,18 +59,46 @@ class _ProgressIndicatorExampleState extends State<ProgressIndicatorExample>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: <Widget>[
+          MenuAnchor(
+            builder: (BuildContext context, MenuController controller,
+                Widget? child) {
+              return IconButton(
+                onPressed: () {
+                  if (controller.isOpen) {
+                    controller.close();
+                  } else {
+                    controller.open();
+                  }
+                },
+                icon: const Icon(Icons.density_medium),
+                tooltip: 'Show menu',
+              );
+            },
+            menuChildren: [
+              MenuItemButton(
+                onPressed: null,
+                child: Text('text'),
+              ),
+              MenuItemButton(
+                child: const Text('main'),
+                onPressed: () {
+                  log.info('main pressed');
+                },
+              )
+            ],
+          ),
+        ],
+        title: const Text('投資に関するアンケート'),
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(1.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            const Text(
-              'Linear progress indicator with a fixed color',
-              style: TextStyle(fontSize: 20),
-            ),
             LinearProgressIndicator(
               // value: controller.value,
-
               value: i,
               semanticsLabel: 'Linear progress indicator',
             ),
@@ -71,7 +106,12 @@ class _ProgressIndicatorExampleState extends State<ProgressIndicatorExample>
                 onPressed: () {
                   i = i + 0.1;
                 },
-                child: const Text('Elevated')),
+                child: const Text('Forward')),
+            ElevatedButton(
+                onPressed: () {
+                  i = i - 0.1;
+                },
+                child: const Text('Backward')),
             Text('${i.toString()}'),
           ],
         ),
