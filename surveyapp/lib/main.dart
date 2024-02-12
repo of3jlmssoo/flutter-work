@@ -7,6 +7,8 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
+import 'data.dart';
+
 final log = Logger('MainLogger');
 
 void main() {
@@ -39,6 +41,8 @@ class SurveyMenu extends StatefulWidget {
 
 class _SurveyMenuState extends State<SurveyMenu> with TickerProviderStateMixin {
   late AnimationController controller;
+
+  final Document document = Document();
 
   var i = 0.0;
 
@@ -111,6 +115,7 @@ class _SurveyMenuState extends State<SurveyMenu> with TickerProviderStateMixin {
             ElevatedButton(
                 onPressed: () {
                   i = i + 0.1;
+                  log.info('document : $document');
                 },
                 child: const Text('Forward')),
             ElevatedButton(
