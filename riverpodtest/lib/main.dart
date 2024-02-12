@@ -205,7 +205,7 @@ class HomeScreen extends ConsumerWidget {
                       if (userinstance.currentUser == null) {
                         loggedin = await firebaseLoginController(context);
                       } else {
-                        context.go("/fbdataget");
+                               context.go("/fbdataget");
                       }
                     },
               child: const Text('レポート一覧'),

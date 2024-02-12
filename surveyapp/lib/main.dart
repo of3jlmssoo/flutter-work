@@ -1,3 +1,9 @@
+// TODO : プログレスバーの処理 計算で処理する
+// TODO : JSON処理 metadata(サンプルそのまま)
+// TODO : JSON処理 questionsパート
+// TODO : JSONをインプットにしたUI
+// TODO : firestoreへ送付
+
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
