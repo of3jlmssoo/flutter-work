@@ -115,7 +115,8 @@ class _SurveyMenuState extends State<SurveyMenu> with TickerProviderStateMixin {
             ElevatedButton(
                 onPressed: () {
                   i = i + 0.1;
-                  log.info('document : $document');
+                  // log.info('document : ${document.getBlocks()}');
+                  document.getBlocks();
                 },
                 child: const Text('Forward')),
             ElevatedButton(
