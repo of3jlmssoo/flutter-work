@@ -1,15 +1,37 @@
 // TODO : プログレスバーの処理 計算で処理する
-// TODO : JSON処理 metadata(サンプルそのまま)
-// TODO : JSON処理 questionsパート
-// TODO : JSONをインプットにしたUI
+// DONE : JSON処理 metadata(サンプルそのまま)
+// DONE : JSON処理 questionsパート
+// TODO : JSONをインプットにしたUI (初期画面)
+// TODO : JSONをインプットにしたUI (2つ目以降。gorouter組み込み)
 // TODO : firestoreへ送付
 
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'data.dart';
 
 final log = Logger('MainLogger');
+
+final GoRouter _router = GoRouter(
+  routes: <RouteBase>[
+    GoRoute(
+      path: '/',
+      builder: (BuildContext context, GoRouterState state) {
+        return const FirstScreen();
+      },
+      routes: <RouteBase>[
+        GoRoute(
+          path: 'details',
+          builder: (BuildContext context, GoRouterState state) {
+            return const DetailsScreen();
+          },
+        ),
+      ],
+    ),
+  ],
+);
 
 void main() {
   Logger.root.level = Level.ALL; // defaults to Level.INFO

@@ -151,15 +151,10 @@ sealed class Block {
   factory Block.fromJson(Map<String, Object?> json) {
     log.info('--- $json ---');
     for (var e in json.keys) {
-      log.info('$e ${json[e].runtimeType}');
+      log.info('$e ${json[e].runtimeType} ${json[e]}');
     }
 
-    // log.info('--- ${json["comment"].runtimeType}');
-    // log.info('--- ${json["questionid"].runtimeType}');
-    // log.info('--- ${json["type"].runtimeType}');
-    // log.info('--- ${json["text"].runtimeType}');
-    // log.info('--- ${json["nexts"].runtimeType}');
-    log.info('-------------');
+    log.info('\n');
     return switch (json) {
       {
         'comment': String comment,
