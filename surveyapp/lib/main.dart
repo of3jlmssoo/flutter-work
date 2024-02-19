@@ -1,16 +1,20 @@
 // TODO : プログレスバーの処理 計算で処理する
-// DONE : JSON処理 metadata(サンプルそのまま)
-// DONE : JSON処理 questionsパート
+// DONE : JSON decode処理 metadata(サンプルそのまま)
+// DONE : JSON decode処理 questionsパート
 // TODO : JSONをインプットにしたUI (初期画面)
 // TODO : JSONをインプットにしたUI (2つ目以降。gorouter組み込み)
+// TODO : firestore collection/doc構成決定
+// TODO : firebase/firestore emulator構成
 // TODO : firestoreへ送付
 
+// MEMO : DateTimeはエンコードする時にtoIso8601String()でISO8601形式の文字列に変換する
+
 import 'package:flutter/material.dart';
-import 'package:logging/logging.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logging/logging.dart';
 
-import 'data.dart';
+import 'questions.dart';
 
 final log = Logger('MainLogger');
 
