@@ -11,7 +11,6 @@
 // MEMO : DateTimeはエンコードする時にtoIso8601String()でISO8601形式の文字列に変換する
 
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 
@@ -57,119 +56,12 @@ class SurveyApp extends StatelessWidget {
       routerConfig: _router,
     );
   }
-  // @override
-  // Widget build(BuildContext context) {
-  //   return const MaterialApp(
-  //     home: SurveyMenu(),
-  //   );
-  // }
 }
 
-// class SurveyMenu extends StatefulWidget {
-//   const SurveyMenu({super.key});
-//
-//   @override
-//   State<SurveyMenu> createState() => _SurveyMenuState();
-// }
-//
-// class _SurveyMenuState extends State<SurveyMenu> with TickerProviderStateMixin {
-//   late AnimationController controller;
-//
-//   final Document document = Document();
-//
-//   var i = 0.0;
-//
-//   @override
-//   void initState() {
-//     controller = AnimationController(
-//       /// [AnimationController]s can be created with `vsync: this` because of
-//       /// [TickerProviderStateMixin].
-//       vsync: this,
-//       duration: const Duration(seconds: 120),
-//     )..addListener(() {
-//         setState(() {});
-//       });
-//     controller.repeat(reverse: true);
-//     super.initState();
-//   }
-//
-//   @override
-//   void dispose() {
-//     controller.dispose();
-//     super.dispose();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         actions: <Widget>[
-//           MenuAnchor(
-//             builder: (BuildContext context, MenuController controller,
-//                 Widget? child) {
-//               return IconButton(
-//                 onPressed: () {
-//                   if (controller.isOpen) {
-//                     controller.close();
-//                   } else {
-//                     controller.open();
-//                   }
-//                 },
-//                 icon: const Icon(Icons.density_medium),
-//                 tooltip: 'Show menu',
-//               );
-//             },
-//             menuChildren: [
-//               MenuItemButton(
-//                 onPressed: null,
-//                 child: Text('text'),
-//               ),
-//               MenuItemButton(
-//                 child: const Text('main'),
-//                 onPressed: () {
-//                   log.info('main pressed');
-//                 },
-//               )
-//             ],
-//           ),
-//         ],
-//         title: const Text('投資に関するアンケート'),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(1.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.start,
-//           children: <Widget>[
-//             LinearProgressIndicator(
-//               // value: controller.value,
-//               value: i,
-//               semanticsLabel: 'Linear progress indicator',
-//             ),
-//             ElevatedButton(
-//                 onPressed: () {
-//                   i = i + 0.1;
-//                   // log.info('document : ${document.getBlocks()}');
-//                   document.getBlocks();
-//                 },
-//                 child: const Text('Forward')),
-//             ElevatedButton(
-//                 onPressed: () {
-//                   i = i - 0.1;
-//                 },
-//                 child: const Text('Backward')),
-//             Text('${i.toString()}'),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 class HomeScreen extends StatelessWidget {
-  /// Constructs a [HomeScreen]
   HomeScreen({super.key});
   final Document document = Document();
-  late List<Block> questions;
+  // final List<Block> questions = document.getBlocks();
 
   @override
   Widget build(BuildContext context) {
@@ -205,13 +97,9 @@ class HomeScreen extends StatelessWidget {
                   final List<Block> questions = document.getBlocks();
                   for (int i = 0; i < questions.length; i++) {
                     log.info('--------------------------------------------');
-                    log.info(
-                        'i=$i ${questions[i].questionid} ${questions[i].text} ${questions[i].nexts}');
-                    if (questions[i].questionid == "20") {
-                      log.info('--> ${questions[i].choices}');
-                    }
-
-                    // log.info('${BlockWidget(block: q)}');
+                    log.info(questions[i].runtimeType == Type21
+                        ? questions[i].choices
+                        : 'not Type21');
                     log.info('============================================');
                   }
                 },
@@ -301,17 +189,6 @@ class BlockWidget extends StatelessWidget {
         Type10(:final comment, :final questionid, :final text, :final nexts) =>
           Text('type 10'),
 
-        // HeaderBlock(:final text) => Text(
-        //   text,
-        //   style: Theme.of(context).textTheme.displayMedium,
-        // ),
-        // ParagraphBlock(:final text) => Text(text),
-        // CheckboxBlock(:final text, :final isChecked) => Row(
-        //   children: [
-        //     Checkbox(value: isChecked, onChanged: (_) {}),
-        //     Text(text),
-        //   ],
-        // ),
         // TODO: Handle this case.
         Type31() => null,
         // TODO: Handle this case.
