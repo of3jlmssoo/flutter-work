@@ -133,7 +133,8 @@ const documentJson = """
       "comment" : "70. 文書 + 送信",
       "questionid" : "60",
       "type" : "70",
-      "text" : "ご回答いただきありがとうございました。回答送信ボタンを押してください。" 
+      "text" : "ご回答いただきありがとうございました。回答送信ボタンを押してください。",
+      "nexts" : [ "0" ]
     }
   ]
 
@@ -190,7 +191,7 @@ sealed class Block {
         'questionid': String questionid,
         'type': '30',
         'text': String text,
-        'choices': String choices,
+        'choices': List<dynamic> choices,
         'nexts': List<dynamic> nexts
       } =>
         Type30(comment, questionid, text, choices, nexts),
@@ -225,18 +226,27 @@ sealed class Block {
         'questionid': String questionid,
         'type': '70',
         'text': String text,
+        'nexts': List<dynamic> nexts
       } =>
-        Type70(comment, questionid, text),
+        Type70(comment, questionid, text, nexts),
       _ => throw FormatException('Unexpected JSON format $json'),
     };
   }
+
+  String get questionid => questionid;
+  String get type => type;
+  String get text => text;
+  List<dynamic> get nexts => nexts;
+  List<dynamic> get values => values;
+  List<dynamic> get choices => choices;
 }
 
 class Type70 extends Block {
   final String comment;
   final String questionid;
   final String text;
-  Type70(this.comment, this.questionid, this.text);
+  final List<dynamic> nexts;
+  Type70(this.comment, this.questionid, this.text, this.nexts);
 }
 
 class Type50 extends Block {
@@ -270,7 +280,7 @@ class Type30 extends Block {
   final String questionid;
   final String text;
   // final List<dynamic> choices;
-  final String choices;
+  final List<dynamic> choices;
   final List<dynamic> nexts;
   Type30(this.comment, this.questionid, this.text, this.choices, this.nexts);
 }
@@ -279,7 +289,7 @@ class Type20 extends Block {
   final String comment;
   final String questionid;
   final String text;
-  final String choices;
+  final List<dynamic> choices;
   final List<dynamic> nexts;
   Type20(this.comment, this.questionid, this.text, this.choices, this.nexts);
 }

@@ -203,9 +203,15 @@ class HomeScreen extends StatelessWidget {
               MenuItemButton(
                 onPressed: () {
                   final List<Block> questions = document.getBlocks();
-                  for (var q in questions) {
+                  for (int i = 0; i < questions.length; i++) {
                     log.info('--------------------------------------------');
-                    BlockWidget(block: q);
+                    log.info(
+                        'i=$i ${questions[i].questionid} ${questions[i].text} ${questions[i].nexts}');
+                    if (questions[i].questionid == "20") {
+                      log.info('--> ${questions[i].choices}');
+                    }
+
+                    // log.info('${BlockWidget(block: q)}');
                     log.info('============================================');
                   }
                 },
