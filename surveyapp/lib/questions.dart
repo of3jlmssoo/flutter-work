@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 final log = Logger('Data');
@@ -233,11 +234,12 @@ sealed class Block {
     };
   }
 
-  String get questionid => questionid;
-  String get type => type;
-  String get text => text;
-  List<dynamic> get nexts => nexts;
-  List<dynamic> get values => values;
+  // String get questionid => questionid;
+  // String get type => type;
+  // String get text => text;
+  // List<dynamic> get nexts => nexts;
+  // List<dynamic> get values => values;
+
   List<dynamic> get choices => choices;
 }
 
@@ -261,6 +263,7 @@ class Type31 extends Block {
   final String comment;
   final String questionid;
   final String text;
+  @override
   final List<dynamic> choices;
   final List<dynamic> nexts;
   Type31(this.comment, this.questionid, this.text, this.choices, this.nexts);
@@ -280,6 +283,7 @@ class Type30 extends Block {
   final String questionid;
   final String text;
   // final List<dynamic> choices;
+  @override
   final List<dynamic> choices;
   final List<dynamic> nexts;
   Type30(this.comment, this.questionid, this.text, this.choices, this.nexts);
@@ -289,6 +293,7 @@ class Type20 extends Block {
   final String comment;
   final String questionid;
   final String text;
+  @override
   final List<dynamic> choices;
   final List<dynamic> nexts;
   Type20(this.comment, this.questionid, this.text, this.choices, this.nexts);
@@ -298,6 +303,7 @@ class Type21 extends Block {
   final String comment;
   final String questionid;
   final String text;
+  @override
   final List<dynamic> choices;
   final List<dynamic> nexts;
   Type21(this.comment, this.questionid, this.text, this.choices, this.nexts);
@@ -334,3 +340,74 @@ class Type10 extends Block {
 //   final bool isChecked;
 //   CheckboxBlock(this.text, this.isChecked);
 // }
+
+class BlockWidget extends StatelessWidget {
+  final Block block;
+
+  const BlockWidget({
+    required this.block,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(8),
+      child: switch (block) {
+        Type70(:final comment, :final questionid, :final text) =>
+          Text('type 70'),
+        Type50(:final comment, :final questionid, :final text, :final nexts) =>
+          Text('type 50'),
+        Type31(
+          :final comment,
+          :final questionid,
+          :final text,
+          :final choices,
+          :final nexts
+        ) =>
+          Text('type 31'),
+        Type40(
+          :final comment,
+          :final questionid,
+          :final text,
+          :final values,
+          :final nexts
+        ) =>
+          Text('type 40'),
+        Type30(
+          :final comment,
+          :final questionid,
+          :final text,
+          :final choices,
+          :final nexts
+        ) =>
+          Text('type 30'),
+        Type20(
+          :final comment,
+          :final questionid,
+          :final text,
+          :final choices,
+          :final nexts
+        ) =>
+          Text('type 20'),
+        Type21(
+          :final comment,
+          :final questionid,
+          :final text,
+          :final choices,
+          :final nexts
+        ) =>
+          Text('type 21'),
+        Type60(:final comment, :final questionid, :final text, :final nexts) =>
+          Text('type 60'),
+        Type10(:final comment, :final questionid, :final text, :final nexts) =>
+          Text('type 10'),
+
+        // TODO: Handle this case.
+        Type31() => null,
+        // TODO: Handle this case.
+        Type40() => null,
+      },
+    );
+  }
+}
