@@ -43,7 +43,7 @@ const documentJson = """
       "comment" : "10. 文書 + はい/いいえ",
       "questionid" : "10",
       "type" : "10",
-      "text" : "今後の情報提供に役立てるため、このアンケートは、皆様の投資に関する知識、認識を把握させていただきます。ご協力をお願いいたします。勝手ながら、ご回答者は20歳以上の方に限定させていただきます。２０歳以上の方ですか？",
+      "text" : "今後の情報提供に役立てるため、このアンケートは、皆様の投資に関する知識、認識を把握させていただきます。ご協力をお願いいたします。\\n\\n勝手ながら、ご回答者は20歳以上の方に限定させていただきます。\\n\\n２０歳以上の方ですか？",
       "nexts" : ["20" , "11"]
     },
     {
@@ -234,11 +234,11 @@ sealed class Block {
     };
   }
 
-  // String get questionid => questionid;
-  // String get type => type;
-  // String get text => text;
-  // List<dynamic> get nexts => nexts;
-  // List<dynamic> get values => values;
+  String get questionid => questionid;
+  String get type => type;
+  String get text => text;
+  List<dynamic> get nexts => nexts;
+  List<dynamic> get values => values;
 
   List<dynamic> get choices => choices;
 }

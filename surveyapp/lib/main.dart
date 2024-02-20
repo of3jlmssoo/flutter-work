@@ -59,8 +59,9 @@ class SurveyApp extends StatelessWidget {
 }
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+  HomeScreen({super.key}) : questions = Document().getBlocks();
   final Document document = Document();
+  final List<Block> questions;
   // final List<Block> questions = document.getBlocks();
 
   @override
@@ -100,6 +101,7 @@ class HomeScreen extends StatelessWidget {
                     log.info(questions[i].runtimeType == Type21
                         ? questions[i].choices
                         : 'not Type21');
+                    QuestionWidget(questionblock: questions[i]);
                     log.info('============================================');
                   }
                 },
@@ -119,10 +121,43 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           // onPressed: () => context.go('/details'),
-          onPressed: () {},
-          child: const Text('Go to the Details screen'),
+          onPressed: () {
+            // final List<Block> questions = document.getBlocks();
+            // QuestionWidget(questionblock: questions[0]);
+          },
+          child: Text('${questions[0].text}'),
         ),
       ),
+    );
+  }
+}
+
+class QuestionWidget extends StatelessWidget {
+  final Block questionblock;
+
+  const QuestionWidget({
+    required this.questionblock,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(8),
+      child: Text('abc'),
+      // child: switch (questionblockblock) {
+      //   HeaderBlock(:final text) => Text(
+      //       text,
+      //       style: Theme.of(context).textTheme.displayMedium,
+      //     ),
+      //   ParagraphBlock(:final text) => Text(text),
+      //   CheckboxBlock(:final text, :final isChecked) => Row(
+      //       children: [
+      //         Checkbox(value: isChecked, onChanged: (_) {}),
+      //         Text(text),
+      //       ],
+      //     ),
+      // },
     );
   }
 }
