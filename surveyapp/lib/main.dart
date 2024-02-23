@@ -118,14 +118,18 @@ class HomeScreen extends StatelessWidget {
         ],
         title: const Text('投資に関するアンケート'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          // onPressed: () => context.go('/details'),
-          onPressed: () {
-            // final List<Block> questions = document.getBlocks();
-            // QuestionWidget(questionblock: questions[0]);
-          },
-          child: Text('${questions[0].text}'),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: Row(
+          children: [
+            SizedBox(
+              height: 250,
+            ),
+            Flexible(
+              child: Text('${questions[0].text}',
+                  style: Theme.of(context).textTheme.bodyLarge),
+            ),
+          ],
         ),
       ),
     );
