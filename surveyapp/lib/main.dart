@@ -120,14 +120,15 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Container(
         padding: const EdgeInsets.only(left: 20, right: 20),
-        child: NewWidget(questions: questions, type: questions[0].questionid),
+        child:
+            QuestionMain(questions: questions, type: questions[0].questionid),
       ),
     );
   }
 }
 
-class NewWidget extends StatelessWidget {
-  const NewWidget({
+class QuestionMain extends StatelessWidget {
+  const QuestionMain({
     super.key,
     required this.questions,
     required this.type,
@@ -145,40 +146,50 @@ class NewWidget extends StatelessWidget {
         //   height: 250,
         // ),
         Flexible(
-          child: Text('${questions[0].text}',
+          child: Text(questions[0].text,
               style: Theme.of(context).textTheme.bodyLarge),
         ),
-        Flexible(
-            child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            OutlinedButton(
-              child: const Text('いいえ'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(17),
-                ),
-                side: const BorderSide(),
-              ),
-              onPressed: () {},
+        Flexible(child: QuestionBottom()),
+      ],
+    );
+  }
+}
+
+class QuestionBottom extends StatelessWidget {
+  const QuestionBottom({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(17),
             ),
-            SizedBox(
-              width: 10,
+            side: const BorderSide(),
+          ),
+          onPressed: () {},
+          child: const Text('いいえ'),
+        ),
+        const SizedBox(
+          width: 30,
+        ),
+        OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(17),
             ),
-            OutlinedButton(
-              child: const Text('はい'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(17),
-                ),
-                side: const BorderSide(),
-              ),
-              onPressed: () {},
-            ),
-          ],
-        )),
+            side: const BorderSide(),
+          ),
+          onPressed: () {},
+          child: const Text('はい'),
+        ),
       ],
     );
   }
