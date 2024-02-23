@@ -118,20 +118,68 @@ class HomeScreen extends StatelessWidget {
         ],
         title: const Text('投資に関するアンケート'),
       ),
-      body: Padding(
+      body: Container(
         padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Row(
+        child: NewWidget(questions: questions, type: questions[0].questionid),
+      ),
+    );
+  }
+}
+
+class NewWidget extends StatelessWidget {
+  const NewWidget({
+    super.key,
+    required this.questions,
+    required this.type,
+  });
+
+  final List<Block> questions;
+  final String type;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        // SizedBox(
+        //   height: 250,
+        // ),
+        Flexible(
+          child: Text('${questions[0].text}',
+              style: Theme.of(context).textTheme.bodyLarge),
+        ),
+        Flexible(
+            child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              height: 250,
+            OutlinedButton(
+              child: const Text('いいえ'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(17),
+                ),
+                side: const BorderSide(),
+              ),
+              onPressed: () {},
             ),
-            Flexible(
-              child: Text('${questions[0].text}',
-                  style: Theme.of(context).textTheme.bodyLarge),
+            SizedBox(
+              width: 10,
+            ),
+            OutlinedButton(
+              child: const Text('はい'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(17),
+                ),
+                side: const BorderSide(),
+              ),
+              onPressed: () {},
             ),
           ],
-        ),
-      ),
+        )),
+      ],
     );
   }
 }
