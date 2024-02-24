@@ -61,8 +61,8 @@ class SurveyApp extends StatelessWidget {
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key}) : questions = Document().getBlocks();
   final Document document = Document();
-  final List<Block> questions;
-  // final List<Block> questions = document.getBlocks();
+  // final List<Block> questions;
+  final Map<String, Block> questions;
 
   @override
   Widget build(BuildContext context) {
@@ -95,13 +95,16 @@ class HomeScreen extends StatelessWidget {
               ),
               MenuItemButton(
                 onPressed: () {
-                  final List<Block> questions = document.getBlocks();
-                  for (int i = 0; i < questions.length; i++) {
-                    log.info('--------------------------------------------');
-                    log.info(questions[i].runtimeType == Type21
-                        ? questions[i].choices
-                        : 'not Type21');
-                    QuestionWidget(questionblock: questions[i]);
+                  // final List<Block> questions = document.getBlocks();
+                  // var qkeys = questions.keys;
+                  // for (int i = 0; i < uestions.length; i++) {
+                  log.info('--------------------------------------------');
+                  for (var b in questions.values) {
+                    log.info('${b.values} ${b.text}');
+                    //   log.info(questions[i].runtimeType == Type21
+                    //       ? questions[i].choices
+                    //       : 'not Type21');
+                    //   QuestionWidget(questionblock: questions[i]);
                     log.info('============================================');
                   }
                 },
@@ -120,8 +123,10 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Container(
         padding: const EdgeInsets.only(left: 20, right: 20),
-        child:
-            QuestionMain(questions: questions, type: questions[0].questionid),
+        child: QuestionMain(
+          questions: questions,
+        ),
+        // questions: questions.values.toList(), type: questions["10"]!.type),
       ),
     );
   }
@@ -131,11 +136,12 @@ class QuestionMain extends StatelessWidget {
   const QuestionMain({
     super.key,
     required this.questions,
-    required this.type,
+    // required this.type,
   });
 
-  final List<Block> questions;
-  final String type;
+  // final List<Block> questions;
+  final Map<String, Block> questions;
+  // final String type;
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +152,7 @@ class QuestionMain extends StatelessWidget {
         //   height: 250,
         // ),
         Flexible(
-          child: Text(questions[0].text,
+          child: Text(questions["10"]!.text,
               style: Theme.of(context).textTheme.bodyLarge),
         ),
         Flexible(child: QuestionBottom()),

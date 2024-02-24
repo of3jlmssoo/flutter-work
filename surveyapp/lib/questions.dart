@@ -23,13 +23,31 @@ class Document {
     }
   }
 
-  List<Block> getBlocks() {
+  Map<String, Block> getBlocks() {
+    List<Block> qlist = [];
+    Map<String, Block> result = {};
+
+    log.info('getBlocks called');
     if (_json case {'questions': List blocksJson}) {
-      return [for (final blockJson in blocksJson) Block.fromJson(blockJson)];
+      // return [for (final blockJson in blocksJson) Block.fromJson(blockJson)];
+      qlist = [for (final blockJson in blocksJson) Block.fromJson(blockJson)];
+      for (Block b in qlist) {
+        log.info('--> $b');
+        result[b.questionid] = b;
+      }
+      log.info('before return $result');
+      return result;
     } else {
       throw const FormatException('Unexpected JSON format');
     }
   }
+  // List<Block> getBlocks() {
+  //   if (_json case {'questions': List blocksJson}) {
+  //     return [for (final blockJson in blocksJson) Block.fromJson(blockJson)];
+  //   } else {
+  //     throw const FormatException('Unexpected JSON format');
+  //   }
+  // }
 }
 
 const documentJson = """
