@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
-final log = Logger('Data');
+final log = Logger('questions');
 
 class Document {
   final Map<String, Object?> _json;
