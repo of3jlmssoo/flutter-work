@@ -59,30 +59,27 @@ const answersJson = '''
 sealed class AnswerBlock {
   AnswerBlock();
 
-  Map<String, dynamic> tojson(AnswerBlock b) {
-    // return a map literal with all the non-null key-value pairs
-    return switch (b.runtimeType) {
-      AnswerType10 => {"questionid": b.questionid, "yesno": b.yesno},
-      AnswerType20 => {"questionid": b.questionid, "choices": b.choices},
-      AnswerType21 => {"questionid": b.questionid, "choices": b.choices},
+  // Map<String, dynamic> toJson(AnswerBlock b) {
+  Map<String, dynamic> toJson() {
+    return switch (runtimeType) {
+      AnswerType10 => {"questionid": questionid, "yesno": yesno},
+      AnswerType20 => {"questionid": questionid, "choices": choices},
+      AnswerType21 => {"questionid": questionid, "choices": choices},
       AnswerType30 => {
-          "questionid": b.questionid,
-          "choices": b.choices,
-          "answerinput": b.answerinput
+          "questionid": questionid,
+          "choices": choices,
+          "answerinput": answerinput
         },
       AnswerType31 => {
-          "questionid": b.questionid,
-          "choices": b.choices,
-          "answerinput": b.answerinput
+          "questionid": questionid,
+          "choices": choices,
+          "answerinput": answerinput
         },
-      AnswerType40 => {"questionid": b.questionid, "value": b.value},
-      AnswerType50 => {
-          "questionid": b.questionid,
-          "answerinput": b.answerinput
-        },
-      AnswerType60 => {"questionid": b.questionid, "done": b.done},
-      AnswerType70 => {"questionid": b.questionid, "done": b.done},
-      _ => {"questionid": b.questionid},
+      AnswerType40 => {"questionid": questionid, "value": value},
+      AnswerType50 => {"questionid": questionid, "answerinput": answerinput},
+      AnswerType60 => {"questionid": questionid, "done": done},
+      AnswerType70 => {"questionid": questionid, "done": done},
+      _ => {"questionid": questionid},
     };
   }
 

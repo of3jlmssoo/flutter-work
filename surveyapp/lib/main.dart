@@ -15,6 +15,7 @@ import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 
 import 'questions.dart';
+import 'answers.dart';
 
 final log = Logger('MainLogger');
 
@@ -91,24 +92,24 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () {
                   document.getBlocks();
                 },
-                child: Text('getBlocks()'),
+                child: const Text('getBlocks()'),
               ),
               MenuItemButton(
                 onPressed: () {
-                  // final List<Block> questions = document.getBlocks();
-                  // var qkeys = questions.keys;
-                  // for (int i = 0; i < uestions.length; i++) {
-                  log.info('--------------------------------------------');
                   for (var b in questions.values) {
-                    log.info('${b.values} ${b.text}');
-                    //   log.info(questions[i].runtimeType == Type21
-                    //       ? questions[i].choices
-                    //       : 'not Type21');
-                    //   QuestionWidget(questionblock: questions[i]);
-                    log.info('============================================');
+                    log.info('${b.questionid} ${b.text}');
                   }
                 },
-                child: Text('document'),
+                child: const Text('document'),
+              ),
+              MenuItemButton(
+                onPressed: () {
+                  AnswerBlock ab1 = AnswerType10("10", true);
+                  log.info('${ab1.runtimeType} ${ab1.toJson()}');
+                  AnswerBlock ab2 = AnswerType40("41", ["10"]);
+                  log.info('${ab2.runtimeType} ${ab2.toJson()}');
+                },
+                child: const Text('answer check'),
               ),
               MenuItemButton(
                 child: const Text('main'),
@@ -214,19 +215,6 @@ class QuestionWidget extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(8),
       child: Text('abc'),
-      // child: switch (questionblockblock) {
-      //   HeaderBlock(:final text) => Text(
-      //       text,
-      //       style: Theme.of(context).textTheme.displayMedium,
-      //     ),
-      //   ParagraphBlock(:final text) => Text(text),
-      //   CheckboxBlock(:final text, :final isChecked) => Row(
-      //       children: [
-      //         Checkbox(value: isChecked, onChanged: (_) {}),
-      //         Text(text),
-      //       ],
-      //     ),
-      // },
     );
   }
 }
