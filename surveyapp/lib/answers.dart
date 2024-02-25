@@ -8,7 +8,7 @@ const answersJson = '''
         "questionid" : "10",
         "type" : "10",
         "answer" : "0",
-        "commnet" : "0 for yes 1 for no",
+        "commnet" : "see the type10 definition",
     },
 
 {

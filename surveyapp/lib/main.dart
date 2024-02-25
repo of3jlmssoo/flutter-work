@@ -19,6 +19,8 @@ import 'questions.dart';
 
 final log = Logger('MainLogger');
 
+List<AnswerBlock> answers = [];
+
 class QuestionMeta {
   final String title;
   final String questionid;
@@ -215,9 +217,7 @@ class QuestionBottom extends StatelessWidget {
                 side: const BorderSide(),
               ),
               onPressed: () {
-                QuestionMeta qmnext = QuestionMeta(
-                    qm.title, qm.qmap[qm.questionid]!.nexts[1], qm.qmap);
-                context.goNamed("questionmeta", extra: qmnext);
+                twoChoices(context, 1);
               },
               child: const Text('いいえ'),
             ),
@@ -233,10 +233,7 @@ class QuestionBottom extends StatelessWidget {
                 side: const BorderSide(),
               ),
               onPressed: () {
-                log.info('${qm.qmap[qm.questionid]!.nexts}');
-                QuestionMeta qmnext = QuestionMeta(
-                    qm.title, qm.qmap[qm.questionid]!.nexts[0], qm.qmap);
-                context.goNamed("questionmeta", extra: qmnext);
+                twoChoices(context, 0);
               },
               child: const Text('はい'),
             ),
@@ -244,6 +241,16 @@ class QuestionBottom extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void twoChoices(BuildContext context, int i) {
+    log.info('${qm.qmap[qm.questionid]!.nexts}');
+    QuestionMeta qmnext =
+        QuestionMeta(qm.title, qm.qmap[qm.questionid]!.nexts[i], qm.qmap);
+    context.goNamed("questionmeta", extra: qmnext);
+    AnswerBlock ab = AnswerType10(qm.questionid, i == 0 ? true : false);
+    answers.add(ab);
+    log.info('two choices $ab');
   }
 }
 
@@ -258,57 +265,55 @@ class type21Widget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-        children: [
-          Flexible(
-            flex: 4,
-            child: Scrollbar(
-              thumbVisibility: true,
-              thickness: 10,
-              radius: const Radius.circular(10),
-              scrollbarOrientation: ScrollbarOrientation.right,
-              child: ListView(
-                shrinkWrap: true,
-                // physics: const NeverScrollableScrollPhysics(),
-                // itemExtent: 20,
-                children: [
-                  for (var i = 0;
-                      i < qm.qmap[qm.questionid]!.choices.length;
-                      i++)
-                    CheckboxListTile(
-                      title: Text('${qm.qmap[qm.questionid]!.choices[i]}'),
-                      value: false, //_isChecked[i],
-                      onChanged: (bool? value) {
-                        // setState(() {
-                        //   _isChecked[i] = value!;
-                        // });
-                      },
-                      controlAffinity: ListTileControlAffinity.leading,
-                    )
-                ],
-              ),
+      children: [
+        Flexible(
+          flex: 4,
+          child: Scrollbar(
+            thumbVisibility: true,
+            thickness: 10,
+            radius: const Radius.circular(10),
+            scrollbarOrientation: ScrollbarOrientation.right,
+            child: ListView(
+              shrinkWrap: true,
+              // physics: const NeverScrollableScrollPhysics(),
+              // itemExtent: 20,
+              children: [
+                for (var i = 0; i < qm.qmap[qm.questionid]!.choices.length; i++)
+                  CheckboxListTile(
+                    title: Text('${qm.qmap[qm.questionid]!.choices[i]}'),
+                    value: false, //_isChecked[i],
+                    onChanged: (bool? value) {
+                      // setState(() {
+                      //   _isChecked[i] = value!;
+                      // });
+                    },
+                    controlAffinity: ListTileControlAffinity.leading,
+                  )
+              ],
             ),
           ),
-          const Expanded(child: SizedBox()),
-          Flexible(
-            child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(17),
-                ),
-                side: const BorderSide(),
+        ),
+        const Expanded(child: SizedBox()),
+        Flexible(
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(17),
               ),
-              onPressed: () {
-                log.info('${qm.qmap[qm.questionid]!.nexts}');
-                QuestionMeta qmnext = QuestionMeta(
-                    qm.title, qm.qmap[qm.questionid]!.nexts[0], qm.qmap);
-                context.goNamed("questionmeta", extra: qmnext);
-              },
-              child: const Text('はい'),
+              side: const BorderSide(),
             ),
-          )
-        ],
-      );
+            onPressed: () {
+              log.info('${qm.qmap[qm.questionid]!.nexts}');
+              QuestionMeta qmnext = QuestionMeta(
+                  qm.title, qm.qmap[qm.questionid]!.nexts[0], qm.qmap);
+              context.goNamed("questionmeta", extra: qmnext);
+            },
+            child: const Text('はい'),
+          ),
+        )
+      ],
+    );
   }
 }
 
