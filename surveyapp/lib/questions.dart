@@ -23,15 +23,17 @@ class Document {
     }
   }
 
-  Map<String, Block> getBlocks() {
-    List<Block> qlist = [];
-    Map<String, Block> result = {};
+  Map<String, QuestionBlock> getBlocks() {
+    List<QuestionBlock> qlist = [];
+    Map<String, QuestionBlock> result = {};
 
     log.info('getBlocks called');
     if (_json case {'questions': List blocksJson}) {
       // return [for (final blockJson in blocksJson) Block.fromJson(blockJson)];
-      qlist = [for (final blockJson in blocksJson) Block.fromJson(blockJson)];
-      for (Block b in qlist) {
+      qlist = [
+        for (final blockJson in blocksJson) QuestionBlock.fromJson(blockJson)
+      ];
+      for (QuestionBlock b in qlist) {
         log.info('--> $b');
         result[b.questionid] = b;
       }
@@ -160,10 +162,10 @@ const documentJson = """
 }
 """;
 
-sealed class Block {
-  Block();
+sealed class QuestionBlock {
+  QuestionBlock();
 
-  factory Block.fromJson(Map<String, Object?> json) {
+  factory QuestionBlock.fromJson(Map<String, Object?> json) {
     log.info('--- $json ---');
     for (var e in json.keys) {
       log.info('$e ${json[e].runtimeType} ${json[e]}');
@@ -261,7 +263,7 @@ sealed class Block {
   List<dynamic> get choices => choices;
 }
 
-class Type70 extends Block {
+class Type70 extends QuestionBlock {
   final String comment;
   final String questionid;
   final String text;
@@ -269,7 +271,7 @@ class Type70 extends Block {
   Type70(this.comment, this.questionid, this.text, this.nexts);
 }
 
-class Type50 extends Block {
+class Type50 extends QuestionBlock {
   final String comment;
   final String questionid;
   final String text;
@@ -277,7 +279,7 @@ class Type50 extends Block {
   Type50(this.comment, this.questionid, this.text, this.nexts);
 }
 
-class Type31 extends Block {
+class Type31 extends QuestionBlock {
   final String comment;
   final String questionid;
   final String text;
@@ -287,7 +289,7 @@ class Type31 extends Block {
   Type31(this.comment, this.questionid, this.text, this.choices, this.nexts);
 }
 
-class Type40 extends Block {
+class Type40 extends QuestionBlock {
   final String comment;
   final String questionid;
   final String text;
@@ -296,7 +298,7 @@ class Type40 extends Block {
   Type40(this.comment, this.questionid, this.text, this.values, this.nexts);
 }
 
-class Type30 extends Block {
+class Type30 extends QuestionBlock {
   final String comment;
   final String questionid;
   final String text;
@@ -307,7 +309,7 @@ class Type30 extends Block {
   Type30(this.comment, this.questionid, this.text, this.choices, this.nexts);
 }
 
-class Type20 extends Block {
+class Type20 extends QuestionBlock {
   final String comment;
   final String questionid;
   final String text;
@@ -317,7 +319,7 @@ class Type20 extends Block {
   Type20(this.comment, this.questionid, this.text, this.choices, this.nexts);
 }
 
-class Type21 extends Block {
+class Type21 extends QuestionBlock {
   final String comment;
   final String questionid;
   final String text;
@@ -327,7 +329,7 @@ class Type21 extends Block {
   Type21(this.comment, this.questionid, this.text, this.choices, this.nexts);
 }
 
-class Type60 extends Block {
+class Type60 extends QuestionBlock {
   final String comment;
   final String questionid;
   final String text;
@@ -335,7 +337,7 @@ class Type60 extends Block {
   Type60(this.comment, this.questionid, this.text, this.nexts);
 }
 
-class Type10 extends Block {
+class Type10 extends QuestionBlock {
   final String comment;
   final String questionid;
   final String text;
@@ -360,7 +362,7 @@ class Type10 extends Block {
 // }
 
 class BlockWidget extends StatelessWidget {
-  final Block block;
+  final QuestionBlock block;
 
   const BlockWidget({
     required this.block,

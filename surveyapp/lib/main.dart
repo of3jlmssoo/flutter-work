@@ -14,10 +14,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 
-import 'questions.dart';
 import 'answers.dart';
+import 'questions.dart';
 
 final log = Logger('MainLogger');
+
+class QuestionMeta {
+  final String title;
+  final QuestionBlock qb;
+  QuestionMeta(this.title, this.qb);
+}
 
 final GoRouter _router = GoRouter(
   routes: <RouteBase>[
@@ -26,14 +32,14 @@ final GoRouter _router = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         return HomeScreen();
       },
-      routes: <RouteBase>[
-        GoRoute(
-          path: 'details',
-          builder: (BuildContext context, GoRouterState state) {
-            return HomeScreen();
-          },
-        ),
-      ],
+    ),
+    GoRoute(
+      name: 'questionmeta',
+      path: '/questionmeta',
+      builder: (context, state) {
+        QuestionMeta sample = state.extra as QuestionMeta;
+        return QuestionMain(qm: sample);
+      },
     ),
   ],
 );
@@ -63,10 +69,12 @@ class HomeScreen extends StatelessWidget {
   HomeScreen({super.key}) : questions = Document().getBlocks();
   final Document document = Document();
   // final List<Block> questions;
-  final Map<String, Block> questions;
+  final Map<String, QuestionBlock> questions;
 
   @override
   Widget build(BuildContext context) {
+    final (title, :modified) = document.metadata;
+
     return Scaffold(
       appBar: AppBar(
         // title: const Text('Home Screen')
@@ -108,6 +116,9 @@ class HomeScreen extends StatelessWidget {
                   log.info('${ab1.runtimeType} ${ab1.toJson()}');
                   AnswerBlock ab2 = AnswerType40("41", ["10"]);
                   log.info('${ab2.runtimeType} ${ab2.toJson()}');
+                  log.info('${this.runtimeType.toString()}');
+                  log.info('${title}');
+                  log.info('answer checked');
                 },
                 child: const Text('answer check'),
               ),
@@ -122,42 +133,49 @@ class HomeScreen extends StatelessWidget {
         ],
         title: const Text('投資に関するアンケート'),
       ),
-      body: Container(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: QuestionMain(
-          questions: questions,
-        ),
-        // questions: questions.values.toList(), type: questions["10"]!.type),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: TextButton(
+              onPressed: () {
+                QuestionMeta qm = QuestionMeta(title, questions["10"]!);
+                context.goNamed("questionmeta", extra: qm);
+              },
+              child: const Text('始める'),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
 class QuestionMain extends StatelessWidget {
+  final QuestionMeta qm;
   const QuestionMain({
     super.key,
-    required this.questions,
-    // required this.type,
+    required this.qm,
   });
-
-  // final List<Block> questions;
-  final Map<String, Block> questions;
-  // final String type;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        // SizedBox(
-        //   height: 250,
-        // ),
-        Flexible(
-          child: Text(questions["10"]!.text,
-              style: Theme.of(context).textTheme.bodyLarge),
+    return Scaffold(
+      appBar: AppBar(title: Text(qm.title)),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Flexible(
+              child: Text(qm.qb.text,
+                  style: Theme.of(context).textTheme.bodyLarge),
+            ),
+            Flexible(child: QuestionBottom()),
+          ],
         ),
-        Flexible(child: QuestionBottom()),
-      ],
+      ),
     );
   }
 }
@@ -203,7 +221,7 @@ class QuestionBottom extends StatelessWidget {
 }
 
 class QuestionWidget extends StatelessWidget {
-  final Block questionblock;
+  final QuestionBlock questionblock;
 
   const QuestionWidget({
     required this.questionblock,
