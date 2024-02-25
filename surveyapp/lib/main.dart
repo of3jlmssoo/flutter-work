@@ -192,101 +192,123 @@ class QuestionBottom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (qm.qmap[qm.questionid].runtimeType) {
-      Type10 => type10return(context),
-      Type21 => Column(
-          children: [
-            Flexible(
-              flex: 4,
-              child: Scrollbar(
-                thumbVisibility: true,
-                thickness: 10,
-                radius: const Radius.circular(10),
-                scrollbarOrientation: ScrollbarOrientation.right,
-                child: ListView(
-                  shrinkWrap: true,
-                  // physics: const NeverScrollableScrollPhysics(),
-                  itemExtent: 20,
-                  children: [
-                    for (var i = 0; i < 20; i++)
-                      CheckboxListTile(
-                        title: Text("item : $i"),
-                        value: false, //_isChecked[i],
-                        onChanged: (bool? value) {
-                          // setState(() {
-                          //   _isChecked[i] = value!;
-                          // });
-                        },
-                        controlAffinity: ListTileControlAffinity.leading,
-                      )
-                  ],
-                ),
-              ),
-            ),
-            Flexible(
-              child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(17),
-                  ),
-                  side: const BorderSide(),
-                ),
-                onPressed: () {
-                  log.info('${qm.qmap[qm.questionid]!.nexts}');
-                  QuestionMeta qmnext = QuestionMeta(
-                      qm.title, qm.qmap[qm.questionid]!.nexts[0], qm.qmap);
-                  context.goNamed("questionmeta", extra: qmnext);
-                },
-                child: const Text('はい'),
-              ),
-            )
-          ],
-        ),
+      Type10 => type10Widget(context),
+      Type21 => type21Widget(qm: qm),
       Type() =>
         throw UnimplementedError(qm.qmap[qm.questionid].runtimeType.toString()),
     };
   }
 
-  Row type10return(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+  Column type10Widget(BuildContext context) {
+    return Column(
       children: [
-        OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            foregroundColor: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(17),
+        const Expanded(child: SizedBox()),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(17),
+                ),
+                side: const BorderSide(),
+              ),
+              onPressed: () {
+                QuestionMeta qmnext = QuestionMeta(
+                    qm.title, qm.qmap[qm.questionid]!.nexts[1], qm.qmap);
+                context.goNamed("questionmeta", extra: qmnext);
+              },
+              child: const Text('いいえ'),
             ),
-            side: const BorderSide(),
-          ),
-          onPressed: () {
-            QuestionMeta qmnext = QuestionMeta(
-                qm.title, qm.qmap[qm.questionid]!.nexts[1], qm.qmap);
-            context.goNamed("questionmeta", extra: qmnext);
-          },
-          child: const Text('いいえ'),
-        ),
-        const SizedBox(
-          width: 30,
-        ),
-        OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            foregroundColor: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(17),
+            const SizedBox(
+              width: 30,
             ),
-            side: const BorderSide(),
-          ),
-          onPressed: () {
-            log.info('${qm.qmap[qm.questionid]!.nexts}');
-            QuestionMeta qmnext = QuestionMeta(
-                qm.title, qm.qmap[qm.questionid]!.nexts[0], qm.qmap);
-            context.goNamed("questionmeta", extra: qmnext);
-          },
-          child: const Text('はい'),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(17),
+                ),
+                side: const BorderSide(),
+              ),
+              onPressed: () {
+                log.info('${qm.qmap[qm.questionid]!.nexts}');
+                QuestionMeta qmnext = QuestionMeta(
+                    qm.title, qm.qmap[qm.questionid]!.nexts[0], qm.qmap);
+                context.goNamed("questionmeta", extra: qmnext);
+              },
+              child: const Text('はい'),
+            ),
+          ],
         ),
       ],
     );
+  }
+}
+
+class type21Widget extends StatelessWidget {
+  const type21Widget({
+    super.key,
+    required this.qm,
+  });
+
+  final QuestionMeta qm;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+        children: [
+          Flexible(
+            flex: 4,
+            child: Scrollbar(
+              thumbVisibility: true,
+              thickness: 10,
+              radius: const Radius.circular(10),
+              scrollbarOrientation: ScrollbarOrientation.right,
+              child: ListView(
+                shrinkWrap: true,
+                // physics: const NeverScrollableScrollPhysics(),
+                // itemExtent: 20,
+                children: [
+                  for (var i = 0;
+                      i < qm.qmap[qm.questionid]!.choices.length;
+                      i++)
+                    CheckboxListTile(
+                      title: Text('${qm.qmap[qm.questionid]!.choices[i]}'),
+                      value: false, //_isChecked[i],
+                      onChanged: (bool? value) {
+                        // setState(() {
+                        //   _isChecked[i] = value!;
+                        // });
+                      },
+                      controlAffinity: ListTileControlAffinity.leading,
+                    )
+                ],
+              ),
+            ),
+          ),
+          const Expanded(child: SizedBox()),
+          Flexible(
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(17),
+                ),
+                side: const BorderSide(),
+              ),
+              onPressed: () {
+                log.info('${qm.qmap[qm.questionid]!.nexts}');
+                QuestionMeta qmnext = QuestionMeta(
+                    qm.title, qm.qmap[qm.questionid]!.nexts[0], qm.qmap);
+                context.goNamed("questionmeta", extra: qmnext);
+              },
+              child: const Text('はい'),
+            ),
+          )
+        ],
+      );
   }
 }
 
