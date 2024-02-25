@@ -21,8 +21,9 @@ final log = Logger('MainLogger');
 
 class QuestionMeta {
   final String title;
-  final QuestionBlock qb;
-  QuestionMeta(this.title, this.qb);
+  final String questionid;
+  final Map<String, QuestionBlock> qmap;
+  QuestionMeta(this.title, this.questionid, this.qmap);
 }
 
 final GoRouter _router = GoRouter(
@@ -140,7 +141,7 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: TextButton(
               onPressed: () {
-                QuestionMeta qm = QuestionMeta(title, questions["10"]!);
+                QuestionMeta qm = QuestionMeta(title, "10", questions);
                 context.goNamed("questionmeta", extra: qm);
               },
               child: const Text('始める'),
@@ -166,13 +167,14 @@ class QuestionMain extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Flexible(
-              child: Text(qm.qb.text,
+              flex: 1,
+              child: Text(qm.qmap[qm.questionid]!.text,
                   style: Theme.of(context).textTheme.bodyLarge),
             ),
-            Flexible(child: QuestionBottom()),
+            Flexible(flex: 2, child: QuestionBottom(qm: qm)),
           ],
         ),
       ),
@@ -181,12 +183,71 @@ class QuestionMain extends StatelessWidget {
 }
 
 class QuestionBottom extends StatelessWidget {
+  final QuestionMeta qm;
   const QuestionBottom({
     super.key,
+    required this.qm,
   });
 
   @override
   Widget build(BuildContext context) {
+    return switch (qm.qmap[qm.questionid].runtimeType) {
+      Type10 => type10return(context),
+      Type21 => Column(
+          children: [
+            Flexible(
+              flex: 4,
+              child: Scrollbar(
+                thumbVisibility: true,
+                thickness: 10,
+                radius: const Radius.circular(10),
+                scrollbarOrientation: ScrollbarOrientation.right,
+                child: ListView(
+                  shrinkWrap: true,
+                  // physics: const NeverScrollableScrollPhysics(),
+                  itemExtent: 20,
+                  children: [
+                    for (var i = 0; i < 20; i++)
+                      CheckboxListTile(
+                        title: Text("item : $i"),
+                        value: false, //_isChecked[i],
+                        onChanged: (bool? value) {
+                          // setState(() {
+                          //   _isChecked[i] = value!;
+                          // });
+                        },
+                        controlAffinity: ListTileControlAffinity.leading,
+                      )
+                  ],
+                ),
+              ),
+            ),
+            Flexible(
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(17),
+                  ),
+                  side: const BorderSide(),
+                ),
+                onPressed: () {
+                  log.info('${qm.qmap[qm.questionid]!.nexts}');
+                  QuestionMeta qmnext = QuestionMeta(
+                      qm.title, qm.qmap[qm.questionid]!.nexts[0], qm.qmap);
+                  context.goNamed("questionmeta", extra: qmnext);
+                },
+                child: const Text('はい'),
+              ),
+            )
+          ],
+        ),
+      Type() =>
+        throw UnimplementedError(qm.qmap[qm.questionid].runtimeType.toString()),
+    };
+  }
+
+  Row type10return(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -198,7 +259,11 @@ class QuestionBottom extends StatelessWidget {
             ),
             side: const BorderSide(),
           ),
-          onPressed: () {},
+          onPressed: () {
+            QuestionMeta qmnext = QuestionMeta(
+                qm.title, qm.qmap[qm.questionid]!.nexts[1], qm.qmap);
+            context.goNamed("questionmeta", extra: qmnext);
+          },
           child: const Text('いいえ'),
         ),
         const SizedBox(
@@ -212,7 +277,12 @@ class QuestionBottom extends StatelessWidget {
             ),
             side: const BorderSide(),
           ),
-          onPressed: () {},
+          onPressed: () {
+            log.info('${qm.qmap[qm.questionid]!.nexts}');
+            QuestionMeta qmnext = QuestionMeta(
+                qm.title, qm.qmap[qm.questionid]!.nexts[0], qm.qmap);
+            context.goNamed("questionmeta", extra: qmnext);
+          },
           child: const Text('はい'),
         ),
       ],
