@@ -196,6 +196,7 @@ class QuestionBottom extends StatelessWidget {
     return switch (qm.qmap[qm.questionid].runtimeType) {
       Type10 => type10Widget(context),
       Type21 => type21Widget(qm: qm),
+      Type60 => type60Widget(),
       Type() =>
         throw UnimplementedError(qm.qmap[qm.questionid].runtimeType.toString()),
     };
@@ -250,7 +251,20 @@ class QuestionBottom extends StatelessWidget {
     context.goNamed("questionmeta", extra: qmnext);
     AnswerBlock ab = AnswerType10(qm.questionid, i == 0 ? true : false);
     answers.add(ab);
-    log.info('two choices $ab');
+    log.info('two choices ${ab.questionid} ${ab.yesno}');
+  }
+}
+
+class type60Widget extends StatelessWidget {
+  const type60Widget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      children: [Expanded(child: SizedBox()), Text('アプリを終了させてください')],
+    );
   }
 }
 
