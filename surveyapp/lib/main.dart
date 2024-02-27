@@ -203,6 +203,23 @@ class QuestionBottom extends StatelessWidget {
       Type21 => type2xWidget(qm: qm),
       Type50 => Type50Widget(qm: qm),
       Type60 => type60Widget(),
+      Type70 => Column(
+          children: [
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(17),
+                ),
+                side: const BorderSide(),
+              ),
+              onPressed: () {
+                log.info('Type70 answers:$answers');
+              },
+              child: const Text('送信'),
+            ),
+          ],
+        ),
       Type() =>
         throw UnimplementedError(qm.qmap[qm.questionid].runtimeType.toString()),
     };
