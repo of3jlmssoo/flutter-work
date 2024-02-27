@@ -97,7 +97,7 @@ const documentJson = """
         "ホームページに稀に人の顔写真が掲載されて残念に思うことがある証券会社",
         "口座開設し幾つか買ったのに追加で買えなくなった証券会社"
       ],
-      "nexts" : [ "30"]
+      "nexts" : [ "30" ]
     },
     {
       "comment" : "20. 文書 + 選択肢 (一択)",
@@ -118,7 +118,7 @@ const documentJson = """
       "questionid" : "40",
       "type" : "10",
       "text" : "新NISAがんばりますか？",
-      "nexts" : [ "50"]
+      "nexts" : [ "50", "50" ]
     }, 
        {
       "comment" : "40. 文書 + スライダー(値)",
@@ -197,7 +197,7 @@ sealed class QuestionBlock {
         'choices': List<dynamic> choices,
         'nexts': List<dynamic> nexts
       } =>
-        Type21(comment, questionid, text, choices, nexts),
+        Type20(comment, questionid, text, choices, nexts),
       {
         'comment': String comment,
         'questionid': String questionid,

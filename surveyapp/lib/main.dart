@@ -10,6 +10,7 @@
 
 // MEMO : DateTimeはエンコードする時にtoIso8601String()でISO8601形式の文字列に変換する
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
@@ -164,6 +165,7 @@ class QuestionMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log.info('answers:$answers');
     return Scaffold(
       appBar: AppBar(title: Text(qm.title)),
       body: Padding(
@@ -171,6 +173,7 @@ class QuestionMain extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            Text('${qm.qmap[qm.questionid]}'),
             Flexible(
               flex: 1,
               child: Text(qm.qmap[qm.questionid]!.text,
@@ -193,9 +196,12 @@ class QuestionBottom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log.info('runtimeType:${qm.qmap[qm.questionid].runtimeType}');
     return switch (qm.qmap[qm.questionid].runtimeType) {
       Type10 => type10Widget(context),
-      Type21 => type21Widget(qm: qm),
+      Type20 => type2xWidget(qm: qm),
+      Type21 => type2xWidget(qm: qm),
+      Type50 => Type50Widget(qm: qm),
       Type60 => type60Widget(),
       Type() =>
         throw UnimplementedError(qm.qmap[qm.questionid].runtimeType.toString()),
@@ -255,6 +261,66 @@ class QuestionBottom extends StatelessWidget {
   }
 }
 
+class Type50Widget extends StatelessWidget {
+  final QuestionMeta qm;
+  const Type50Widget({super.key, required this.qm});
+
+  @override
+  Widget build(BuildContext context) {
+    late String userinput;
+    return Column(
+      children: [
+        Expanded(child: SizedBox()),
+        Expanded(
+          child: Container(
+            // width: 300,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                    width: 1, color: Colors.black, style: BorderStyle.solid)),
+            child: TextField(
+              minLines: 5,
+              maxLines: 10,
+              decoration: const InputDecoration(
+                  hintText: 'ここに入力してください',
+                  contentPadding: EdgeInsets.all(15),
+                  border: InputBorder.none),
+              onChanged: (value) {
+                log.info('type50 -- $value');
+                userinput = value;
+              },
+            ),
+          ),
+        ),
+        Expanded(child: SizedBox()),
+        OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(17),
+            ),
+            side: const BorderSide(),
+          ),
+          onPressed: () {
+            AnswerType50 at50 = AnswerType50(qm.questionid, userinput);
+            answers.add(at50);
+            log.info('AnswerType50 : ${at50.questionid} ${at50.answerinput}');
+            log.info('answers : $answers');
+
+            QuestionMeta qmnext = QuestionMeta(
+                qm.title, qm.qmap[qm.questionid]!.nexts[0], qm.qmap);
+            log.info('qmnext title:${qmnext.title}');
+            log.info('       next:${qmnext.qmap[qm.questionid]!.nexts[0]}');
+            log.info('       qmap:${qmnext.qmap}');
+            context.goNamed("questionmeta", extra: qmnext);
+          },
+          child: const Text('次へ'),
+        ),
+      ],
+    );
+  }
+}
+
 class type60Widget extends StatelessWidget {
   const type60Widget({
     super.key,
@@ -268,8 +334,8 @@ class type60Widget extends StatelessWidget {
   }
 }
 
-class type21Widget extends StatefulWidget {
-  const type21Widget({
+class type2xWidget extends StatefulWidget {
+  const type2xWidget({
     super.key,
     required this.qm,
   });
@@ -277,17 +343,17 @@ class type21Widget extends StatefulWidget {
   final QuestionMeta qm;
 
   @override
-  State<type21Widget> createState() => _type21WidgetState();
+  State<type2xWidget> createState() => _type2xWidgetState();
 }
 
-class _type21WidgetState extends State<type21Widget> {
+class _type2xWidgetState extends State<type2xWidget> {
   @override
   Widget build(BuildContext context) {
     var isChecked =
         List.filled(widget.qm.qmap[widget.qm.questionid]!.choices.length, 0);
     return Column(
       children: [
-        Expanded(child: SizedBox()),
+        const Expanded(child: SizedBox()),
         Flexible(
           flex: 4,
           child: Scrollbar(
@@ -339,28 +405,43 @@ class _type21WidgetState extends State<type21Widget> {
                 if (isChecked[i] == 1) selected.add(i);
               }
 
-              AnswerType20 at20 = AnswerType20(widget.qm.questionid, selected);
-              answers.add(at20);
-              log.info('AnswerType20 : ${at20.questionid} ${at20.choices}');
-              log.info('answers : $answers');
-              if (isChecked.fold(0, (e, t) => e + t) > 0) {
+              if (widget.qm.qmap[widget.qm.questionid].runtimeType == Type20) {
+                AnswerType20 at20 =
+                    AnswerType20(widget.qm.questionid, selected);
+                answers.add(at20);
+                log.info('AnswerType20 : ${at20.questionid} ${at20.choices}');
+                log.info('answers : $answers');
+              }
+              if (widget.qm.qmap[widget.qm.questionid].runtimeType == Type21) {
+                AnswerType21 at21 =
+                    AnswerType21(widget.qm.questionid, selected);
+                answers.add(at21);
+                log.info('AnswerType20 : ${at21.questionid} ${at21.choices}');
+                log.info('answers : $answers');
+              }
+              var questionType =
+                  widget.qm.qmap[widget.qm.questionid].runtimeType;
+              if ((questionType == Type21 &&
+                      isChecked.fold(0, (e, t) => e + t) > 0) ||
+                  (questionType == Type20 &&
+                      isChecked.fold(0, (e, t) => e + t) == 1)) {
                 log.info('${widget.qm.qmap[widget.qm.questionid]!.nexts}');
                 QuestionMeta qmnext = QuestionMeta(
                     widget.qm.title,
                     widget.qm.qmap[widget.qm.questionid]!.nexts[0],
                     widget.qm.qmap);
+                log.info('qmnext title:${qmnext.title}');
+                log.info(
+                    '       next:${qmnext.qmap[widget.qm.questionid]!.nexts[0]}');
+                log.info('       qmap:${qmnext.qmap}');
                 context.goNamed("questionmeta", extra: qmnext);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('少なくとも1つご選択ください'),
-                    // action: SnackBarAction(
-                    //   label: 'Action',
-                    //   onPressed: () {
-                    //     // Code to execute.
-                    //   },
-                    // ),
-                    duration: Duration(seconds: 2),
+                  SnackBar(
+                    content: questionType == Type20
+                        ? const Text('1つだけご選択ください')
+                        : const Text('少なくとも1つご選択ください'),
+                    duration: const Duration(seconds: 2),
                   ),
                 );
                 log.info('please select at least one');
