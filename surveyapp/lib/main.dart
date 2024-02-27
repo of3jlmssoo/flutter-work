@@ -167,7 +167,7 @@ class QuestionMain extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(qm.title)),
       body: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -251,7 +251,7 @@ class QuestionBottom extends StatelessWidget {
     context.goNamed("questionmeta", extra: qmnext);
     AnswerBlock ab = AnswerType10(qm.questionid, i == 0 ? true : false);
     answers.add(ab);
-    log.info('two choices ${ab.questionid} ${ab.yesno}');
+    log.info('two choices ${ab.questionid} ${ab.yesno} ${answers}');
   }
 }
 
@@ -268,7 +268,7 @@ class type60Widget extends StatelessWidget {
   }
 }
 
-class type21Widget extends StatelessWidget {
+class type21Widget extends StatefulWidget {
   const type21Widget({
     super.key,
     required this.qm,
@@ -277,9 +277,17 @@ class type21Widget extends StatelessWidget {
   final QuestionMeta qm;
 
   @override
+  State<type21Widget> createState() => _type21WidgetState();
+}
+
+class _type21WidgetState extends State<type21Widget> {
+  @override
   Widget build(BuildContext context) {
+    var isChecked =
+        List.filled(widget.qm.qmap[widget.qm.questionid]!.choices.length, 0);
     return Column(
       children: [
+        Expanded(child: SizedBox()),
         Flexible(
           flex: 4,
           child: Scrollbar(
@@ -292,16 +300,24 @@ class type21Widget extends StatelessWidget {
               // physics: const NeverScrollableScrollPhysics(),
               // itemExtent: 20,
               children: [
-                for (var i = 0; i < qm.qmap[qm.questionid]!.choices.length; i++)
-                  CheckboxListTile(
-                    title: Text('${qm.qmap[qm.questionid]!.choices[i]}'),
-                    value: false, //_isChecked[i],
-                    onChanged: (bool? value) {
-                      // setState(() {
-                      //   _isChecked[i] = value!;
-                      // });
-                    },
-                    controlAffinity: ListTileControlAffinity.leading,
+                for (var i = 0;
+                    i < widget.qm.qmap[widget.qm.questionid]!.choices.length;
+                    i++)
+                  StatefulBuilder(
+                    builder: (context, _setState) => CheckboxListTile(
+                      title: Text(
+                          '${widget.qm.qmap[widget.qm.questionid]!.choices[i]}'),
+                      value: isChecked[i] == 1 ? true : false,
+                      onChanged: (bool? v) {
+                        _setState(() {
+                          // _isChecked[i] = value!;
+                          log.info('value $v   ${isChecked[i]}');
+                          isChecked[i] = v == true ? 1 : 0;
+                          log.info('_isChecked : ${isChecked}');
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity.leading,
+                    ),
                   )
               ],
             ),
@@ -318,12 +334,39 @@ class type21Widget extends StatelessWidget {
               side: const BorderSide(),
             ),
             onPressed: () {
-              log.info('${qm.qmap[qm.questionid]!.nexts}');
-              QuestionMeta qmnext = QuestionMeta(
-                  qm.title, qm.qmap[qm.questionid]!.nexts[0], qm.qmap);
-              context.goNamed("questionmeta", extra: qmnext);
+              List<int> selected = [];
+              for (int i = 0; i < isChecked.length; i++) {
+                if (isChecked[i] == 1) selected.add(i);
+              }
+
+              AnswerType20 at20 = AnswerType20(widget.qm.questionid, selected);
+              answers.add(at20);
+              log.info('AnswerType20 : ${at20.questionid} ${at20.choices}');
+              log.info('answers : $answers');
+              if (isChecked.fold(0, (e, t) => e + t) > 0) {
+                log.info('${widget.qm.qmap[widget.qm.questionid]!.nexts}');
+                QuestionMeta qmnext = QuestionMeta(
+                    widget.qm.title,
+                    widget.qm.qmap[widget.qm.questionid]!.nexts[0],
+                    widget.qm.qmap);
+                context.goNamed("questionmeta", extra: qmnext);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('少なくとも1つご選択ください'),
+                    // action: SnackBarAction(
+                    //   label: 'Action',
+                    //   onPressed: () {
+                    //     // Code to execute.
+                    //   },
+                    // ),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+                log.info('please select at least one');
+              }
             },
-            child: const Text('はい'),
+            child: const Text('次へ'),
           ),
         )
       ],
