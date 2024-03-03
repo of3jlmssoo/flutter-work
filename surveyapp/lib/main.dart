@@ -10,7 +10,6 @@
 
 // MEMO : DateTimeはエンコードする時にtoIso8601String()でISO8601形式の文字列に変換する
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
@@ -141,14 +140,12 @@ class HomeScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(
-            child: TextButton(
-              onPressed: () {
-                QuestionMeta qm = QuestionMeta(title, "10", questions);
-                context.goNamed("questionmeta", extra: qm);
-              },
-              child: const Text('始める'),
-            ),
+          TextButton(
+            onPressed: () {
+              QuestionMeta qm = QuestionMeta(title, "10", questions);
+              context.goNamed("questionmeta", extra: qm);
+            },
+            child: const Text('始める'),
           ),
         ],
       ),
@@ -168,19 +165,18 @@ class QuestionMain extends StatelessWidget {
     log.info('answers:$answers');
     return Scaffold(
       appBar: AppBar(title: Text(qm.title)),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text('${qm.qmap[qm.questionid]}'),
-            Flexible(
-              flex: 1,
-              child: Text(qm.qmap[qm.questionid]!.text,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('${qm.qmap[qm.questionid]}'),
+              Text(qm.qmap[qm.questionid]!.text,
                   style: Theme.of(context).textTheme.bodyLarge),
-            ),
-            Flexible(flex: 2, child: QuestionBottom(qm: qm)),
-          ],
+              QuestionBottom(qm: qm),
+            ],
+          ),
         ),
       ),
     );
@@ -228,7 +224,7 @@ class QuestionBottom extends StatelessWidget {
   Column type10Widget(BuildContext context) {
     return Column(
       children: [
-        const Expanded(child: SizedBox()),
+        // const Expanded(child: SizedBox()),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -287,29 +283,27 @@ class Type50Widget extends StatelessWidget {
     late String userinput;
     return Column(
       children: [
-        Expanded(child: SizedBox()),
-        Expanded(
-          child: Container(
-            // width: 300,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                    width: 1, color: Colors.black, style: BorderStyle.solid)),
-            child: TextField(
-              minLines: 5,
-              maxLines: 10,
-              decoration: const InputDecoration(
-                  hintText: 'ここに入力してください',
-                  contentPadding: EdgeInsets.all(15),
-                  border: InputBorder.none),
-              onChanged: (value) {
-                log.info('type50 -- $value');
-                userinput = value;
-              },
-            ),
+        // Expanded(child: SizedBox()),
+        Container(
+          // width: 300,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                  width: 1, color: Colors.black, style: BorderStyle.solid)),
+          child: TextField(
+            minLines: 5,
+            maxLines: 10,
+            decoration: const InputDecoration(
+                hintText: 'ここに入力してください',
+                contentPadding: EdgeInsets.all(15),
+                border: InputBorder.none),
+            onChanged: (value) {
+              log.info('type50 -- $value');
+              userinput = value;
+            },
           ),
         ),
-        Expanded(child: SizedBox()),
+        // Expanded(child: SizedBox()),
         OutlinedButton(
           style: OutlinedButton.styleFrom(
             foregroundColor: Colors.black,
@@ -346,7 +340,7 @@ class type60Widget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Column(
-      children: [Expanded(child: SizedBox()), Text('アプリを終了させてください')],
+      children: [SizedBox(), Text('アプリを終了させてください')],
     );
   }
 }
@@ -364,108 +358,104 @@ class type2xWidget extends StatefulWidget {
 }
 
 class _type2xWidgetState extends State<type2xWidget> {
+  final ScrollController _firstController = ScrollController();
   @override
   Widget build(BuildContext context) {
     var isChecked =
         List.filled(widget.qm.qmap[widget.qm.questionid]!.choices.length, 0);
+
     return Column(
       children: [
-        const Expanded(child: SizedBox()),
-        Flexible(
-          flex: 4,
-          child: Scrollbar(
-            thumbVisibility: true,
-            thickness: 10,
-            radius: const Radius.circular(10),
-            scrollbarOrientation: ScrollbarOrientation.right,
-            child: ListView(
-              shrinkWrap: true,
-              // physics: const NeverScrollableScrollPhysics(),
-              // itemExtent: 20,
-              children: [
-                for (var i = 0;
-                    i < widget.qm.qmap[widget.qm.questionid]!.choices.length;
-                    i++)
-                  StatefulBuilder(
-                    builder: (context, _setState) => CheckboxListTile(
-                      title: Text(
-                          '${widget.qm.qmap[widget.qm.questionid]!.choices[i]}'),
-                      value: isChecked[i] == 1 ? true : false,
-                      onChanged: (bool? v) {
-                        _setState(() {
-                          // _isChecked[i] = value!;
-                          log.info('value $v   ${isChecked[i]}');
-                          isChecked[i] = v == true ? 1 : 0;
-                          log.info('_isChecked : ${isChecked}');
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity.leading,
-                    ),
-                  )
-              ],
-            ),
+        // const Expanded(child: SizedBox()),
+        Scrollbar(
+          thumbVisibility: true,
+          controller: _firstController,
+          thickness: 10,
+          radius: const Radius.circular(10),
+          scrollbarOrientation: ScrollbarOrientation.right,
+          child: ListView(
+            controller: _firstController,
+            shrinkWrap: true,
+            // physics: const NeverScrollableScrollPhysics(),
+            // itemExtent: 20,
+            children: [
+              for (var i = 0;
+                  i < widget.qm.qmap[widget.qm.questionid]!.choices.length;
+                  i++)
+                StatefulBuilder(
+                  builder: (context, _setState) => CheckboxListTile(
+                    title: Text(
+                        '${widget.qm.qmap[widget.qm.questionid]!.choices[i]}'),
+                    value: isChecked[i] == 1 ? true : false,
+                    onChanged: (bool? v) {
+                      _setState(() {
+                        // _isChecked[i] = value!;
+                        log.info('value $v   ${isChecked[i]}');
+                        isChecked[i] = v == true ? 1 : 0;
+                        log.info('_isChecked : ${isChecked}');
+                      });
+                    },
+                    controlAffinity: ListTileControlAffinity.leading,
+                  ),
+                )
+            ],
           ),
         ),
-        const Expanded(child: SizedBox()),
-        Flexible(
-          child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(17),
-              ),
-              side: const BorderSide(),
+        // const Expanded(child: SizedBox()),
+        OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(17),
             ),
-            onPressed: () {
-              List<int> selected = [];
-              for (int i = 0; i < isChecked.length; i++) {
-                if (isChecked[i] == 1) selected.add(i);
-              }
-
-              if (widget.qm.qmap[widget.qm.questionid].runtimeType == Type20) {
-                AnswerType20 at20 =
-                    AnswerType20(widget.qm.questionid, selected);
-                answers.add(at20);
-                log.info('AnswerType20 : ${at20.questionid} ${at20.choices}');
-                log.info('answers : $answers');
-              }
-              if (widget.qm.qmap[widget.qm.questionid].runtimeType == Type21) {
-                AnswerType21 at21 =
-                    AnswerType21(widget.qm.questionid, selected);
-                answers.add(at21);
-                log.info('AnswerType20 : ${at21.questionid} ${at21.choices}');
-                log.info('answers : $answers');
-              }
-              var questionType =
-                  widget.qm.qmap[widget.qm.questionid].runtimeType;
-              if ((questionType == Type21 &&
-                      isChecked.fold(0, (e, t) => e + t) > 0) ||
-                  (questionType == Type20 &&
-                      isChecked.fold(0, (e, t) => e + t) == 1)) {
-                log.info('${widget.qm.qmap[widget.qm.questionid]!.nexts}');
-                QuestionMeta qmnext = QuestionMeta(
-                    widget.qm.title,
-                    widget.qm.qmap[widget.qm.questionid]!.nexts[0],
-                    widget.qm.qmap);
-                log.info('qmnext title:${qmnext.title}');
-                log.info(
-                    '       next:${qmnext.qmap[widget.qm.questionid]!.nexts[0]}');
-                log.info('       qmap:${qmnext.qmap}');
-                context.goNamed("questionmeta", extra: qmnext);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: questionType == Type20
-                        ? const Text('1つだけご選択ください')
-                        : const Text('少なくとも1つご選択ください'),
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-                log.info('please select at least one');
-              }
-            },
-            child: const Text('次へ'),
+            side: const BorderSide(),
           ),
+          onPressed: () {
+            List<int> selected = [];
+            for (int i = 0; i < isChecked.length; i++) {
+              if (isChecked[i] == 1) selected.add(i);
+            }
+
+            if (widget.qm.qmap[widget.qm.questionid].runtimeType == Type20) {
+              AnswerType20 at20 = AnswerType20(widget.qm.questionid, selected);
+              answers.add(at20);
+              log.info('AnswerType20 : ${at20.questionid} ${at20.choices}');
+              log.info('answers : $answers');
+            }
+            if (widget.qm.qmap[widget.qm.questionid].runtimeType == Type21) {
+              AnswerType21 at21 = AnswerType21(widget.qm.questionid, selected);
+              answers.add(at21);
+              log.info('AnswerType20 : ${at21.questionid} ${at21.choices}');
+              log.info('answers : $answers');
+            }
+            var questionType = widget.qm.qmap[widget.qm.questionid].runtimeType;
+            if ((questionType == Type21 &&
+                    isChecked.fold(0, (e, t) => e + t) > 0) ||
+                (questionType == Type20 &&
+                    isChecked.fold(0, (e, t) => e + t) == 1)) {
+              log.info('${widget.qm.qmap[widget.qm.questionid]!.nexts}');
+              QuestionMeta qmnext = QuestionMeta(
+                  widget.qm.title,
+                  widget.qm.qmap[widget.qm.questionid]!.nexts[0],
+                  widget.qm.qmap);
+              log.info('qmnext title:${qmnext.title}');
+              log.info(
+                  '       next:${qmnext.qmap[widget.qm.questionid]!.nexts[0]}');
+              log.info('       qmap:${qmnext.qmap}');
+              context.goNamed("questionmeta", extra: qmnext);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: questionType == Type20
+                      ? const Text('1つだけご選択ください')
+                      : const Text('少なくとも1つご選択ください'),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+              log.info('please select at least one');
+            }
+          },
+          child: const Text('次へ'),
         )
       ],
     );
