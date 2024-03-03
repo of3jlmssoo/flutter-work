@@ -62,23 +62,23 @@ sealed class AnswerBlock {
   // Map<String, dynamic> toJson(AnswerBlock b) {
   Map<String, dynamic> toJson() {
     return switch (runtimeType) {
-      AnswerType10 => {"questionid": questionid, "yesno": yesno},
-      AnswerType20 => {"questionid": questionid, "choices": choices},
-      AnswerType21 => {"questionid": questionid, "choices": choices},
-      AnswerType30 => {
+      const (AnswerType10) => {"questionid": questionid, "yesno": yesno},
+      const (AnswerType20) => {"questionid": questionid, "choices": choices},
+      const (AnswerType21) => {"questionid": questionid, "choices": choices},
+      const (AnswerType30) => {
           "questionid": questionid,
           "choices": choices,
           "answerinput": answerinput
         },
-      AnswerType31 => {
+      const (AnswerType31) => {
           "questionid": questionid,
           "choices": choices,
           "answerinput": answerinput
         },
-      AnswerType40 => {"questionid": questionid, "value": value},
-      AnswerType50 => {"questionid": questionid, "answerinput": answerinput},
-      AnswerType60 => {"questionid": questionid, "done": done},
-      AnswerType70 => {"questionid": questionid, "done": done},
+      const (AnswerType40) => {"questionid": questionid, "value": value},
+      const (AnswerType50) => {"questionid": questionid, "answerinput": answerinput},
+      const (AnswerType60) => {"questionid": questionid, "done": done},
+      const (AnswerType70) => {"questionid": questionid, "done": done},
       _ => {"questionid": questionid},
     };
   }

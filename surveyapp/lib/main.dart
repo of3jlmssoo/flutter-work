@@ -76,7 +76,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (title, :modified) = document.metadata;
+    // final (title, :modified) = document.metadata;
+    final (title, modified: _) = document.metadata;
 
     return Scaffold(
       appBar: AppBar(
@@ -119,8 +120,8 @@ class HomeScreen extends StatelessWidget {
                   log.info('${ab1.runtimeType} ${ab1.toJson()}');
                   AnswerBlock ab2 = AnswerType40("41", ["10"]);
                   log.info('${ab2.runtimeType} ${ab2.toJson()}');
-                  log.info('${this.runtimeType.toString()}');
-                  log.info('${title}');
+                  log.info(runtimeType.toString());
+                  log.info(title);
                   log.info('answer checked');
                 },
                 child: const Text('answer check'),
@@ -194,12 +195,12 @@ class QuestionBottom extends StatelessWidget {
   Widget build(BuildContext context) {
     log.info('runtimeType:${qm.qmap[qm.questionid].runtimeType}');
     return switch (qm.qmap[qm.questionid].runtimeType) {
-      Type10 => type10Widget(context),
-      Type20 => type2xWidget(qm: qm),
-      Type21 => type2xWidget(qm: qm),
-      Type50 => Type50Widget(qm: qm),
-      Type60 => type60Widget(),
-      Type70 => type70Widget(),
+      const (Type10) => type10Widget(context),
+      const (Type20) => Type2xWidget(qm: qm),
+      const (Type21) => Type2xWidget(qm: qm),
+      const (Type50) => Type50Widget(qm: qm),
+      const (Type60) => const Type60Widget(),
+      const (Type70) => const Type70Widget(),
       Type() =>
         throw UnimplementedError(qm.qmap[qm.questionid].runtimeType.toString()),
     };
@@ -210,7 +211,7 @@ class QuestionBottom extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         // const Expanded(child: SizedBox()),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -256,12 +257,12 @@ class QuestionBottom extends StatelessWidget {
     context.goNamed("questionmeta", extra: qmnext);
     AnswerBlock ab = AnswerType10(qm.questionid, i == 0 ? true : false);
     answers.add(ab);
-    log.info('two choices ${ab.questionid} ${ab.yesno} ${answers}');
+    log.info('two choices ${ab.questionid} ${ab.yesno} $answers');
   }
 }
 
-class type70Widget extends StatelessWidget {
-  const type70Widget({
+class Type70Widget extends StatelessWidget {
+  const Type70Widget({
     super.key,
   });
 
@@ -357,8 +358,8 @@ class Type50Widget extends StatelessWidget {
   }
 }
 
-class type60Widget extends StatelessWidget {
-  const type60Widget({
+class Type60Widget extends StatelessWidget {
+  const Type60Widget({
     super.key,
   });
 
@@ -370,8 +371,8 @@ class type60Widget extends StatelessWidget {
   }
 }
 
-class type2xWidget extends StatefulWidget {
-  const type2xWidget({
+class Type2xWidget extends StatefulWidget {
+  const Type2xWidget({
     super.key,
     required this.qm,
   });
@@ -379,10 +380,10 @@ class type2xWidget extends StatefulWidget {
   final QuestionMeta qm;
 
   @override
-  State<type2xWidget> createState() => _type2xWidgetState();
+  State<Type2xWidget> createState() => _Type2xWidgetState();
 }
 
-class _type2xWidgetState extends State<type2xWidget> {
+class _Type2xWidgetState extends State<Type2xWidget> {
   final ScrollController _firstController = ScrollController();
   @override
   Widget build(BuildContext context) {
@@ -419,7 +420,7 @@ class _type2xWidgetState extends State<type2xWidget> {
                         // _isChecked[i] = value!;
                         log.info('value $v   ${isChecked[i]}');
                         isChecked[i] = v == true ? 1 : 0;
-                        log.info('_isChecked : ${isChecked}');
+                        log.info('_isChecked : $isChecked');
                       });
                     },
                     controlAffinity: ListTileControlAffinity.leading,
@@ -502,7 +503,7 @@ class QuestionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(8),
-      child: Text('abc'),
+      child: const Text('abc'),
     );
   }
 }

@@ -375,9 +375,9 @@ class BlockWidget extends StatelessWidget {
       margin: const EdgeInsets.all(8),
       child: switch (block) {
         Type70(:final comment, :final questionid, :final text) =>
-          Text('type 70'),
+          const Text('type 70'),
         Type50(:final comment, :final questionid, :final text, :final nexts) =>
-          Text('type 50'),
+          const Text('type 50'),
         Type31(
           :final comment,
           :final questionid,
@@ -385,7 +385,7 @@ class BlockWidget extends StatelessWidget {
           :final choices,
           :final nexts
         ) =>
-          Text('type 31'),
+          const Text('type 31'),
         Type40(
           :final comment,
           :final questionid,
@@ -393,7 +393,7 @@ class BlockWidget extends StatelessWidget {
           :final values,
           :final nexts
         ) =>
-          Text('type 40'),
+          const Text('type 40'),
         Type30(
           :final comment,
           :final questionid,
@@ -401,7 +401,7 @@ class BlockWidget extends StatelessWidget {
           :final choices,
           :final nexts
         ) =>
-          Text('type 30'),
+          const Text('type 30'),
         Type20(
           :final comment,
           :final questionid,
@@ -409,7 +409,7 @@ class BlockWidget extends StatelessWidget {
           :final choices,
           :final nexts
         ) =>
-          Text('type 20'),
+          const Text('type 20'),
         Type21(
           :final comment,
           :final questionid,
@@ -417,11 +417,11 @@ class BlockWidget extends StatelessWidget {
           :final choices,
           :final nexts
         ) =>
-          Text('type 21'),
+          const Text('type 21'),
         Type60(:final comment, :final questionid, :final text, :final nexts) =>
-          Text('type 60'),
+          const Text('type 60'),
         Type10(:final comment, :final questionid, :final text, :final nexts) =>
-          Text('type 10'),
+          const Text('type 10'),
 
         // TODO: Handle this case.
         Type31() => null,
