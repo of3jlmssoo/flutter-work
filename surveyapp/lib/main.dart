@@ -199,23 +199,7 @@ class QuestionBottom extends StatelessWidget {
       Type21 => type2xWidget(qm: qm),
       Type50 => Type50Widget(qm: qm),
       Type60 => type60Widget(),
-      Type70 => Column(
-          children: [
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(17),
-                ),
-                side: const BorderSide(),
-              ),
-              onPressed: () {
-                log.info('Type70 answers:$answers');
-              },
-              child: const Text('送信'),
-            ),
-          ],
-        ),
+      Type70 => type70Widget(),
       Type() =>
         throw UnimplementedError(qm.qmap[qm.questionid].runtimeType.toString()),
     };
@@ -223,8 +207,10 @@ class QuestionBottom extends StatelessWidget {
 
   Column type10Widget(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         // const Expanded(child: SizedBox()),
+        SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -274,13 +260,41 @@ class QuestionBottom extends StatelessWidget {
   }
 }
 
+class type70Widget extends StatelessWidget {
+  const type70Widget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 20),
+        OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(17),
+            ),
+            side: const BorderSide(),
+          ),
+          onPressed: () {
+            log.info('Type70 answers:$answers');
+          },
+          child: const Text('送信'),
+        ),
+      ],
+    );
+  }
+}
+
 class Type50Widget extends StatelessWidget {
   final QuestionMeta qm;
   const Type50Widget({super.key, required this.qm});
 
   @override
   Widget build(BuildContext context) {
-    late String userinput;
+    late String userinput = '';
     return Column(
       children: [
         // Expanded(child: SizedBox()),
@@ -304,6 +318,7 @@ class Type50Widget extends StatelessWidget {
           ),
         ),
         // Expanded(child: SizedBox()),
+        const SizedBox(height: 20),
         OutlinedButton(
           style: OutlinedButton.styleFrom(
             foregroundColor: Colors.black,
@@ -313,17 +328,27 @@ class Type50Widget extends StatelessWidget {
             side: const BorderSide(),
           ),
           onPressed: () {
-            AnswerType50 at50 = AnswerType50(qm.questionid, userinput);
-            answers.add(at50);
-            log.info('AnswerType50 : ${at50.questionid} ${at50.answerinput}');
-            log.info('answers : $answers');
+            // ignore: unnecessary_null_comparison
+            if (userinput.isNotEmpty) {
+              AnswerType50 at50 = AnswerType50(qm.questionid, userinput);
+              answers.add(at50);
+              log.info('AnswerType50 : ${at50.questionid} ${at50.answerinput}');
+              log.info('answers : $answers');
 
-            QuestionMeta qmnext = QuestionMeta(
-                qm.title, qm.qmap[qm.questionid]!.nexts[0], qm.qmap);
-            log.info('qmnext title:${qmnext.title}');
-            log.info('       next:${qmnext.qmap[qm.questionid]!.nexts[0]}');
-            log.info('       qmap:${qmnext.qmap}');
-            context.goNamed("questionmeta", extra: qmnext);
+              QuestionMeta qmnext = QuestionMeta(
+                  qm.title, qm.qmap[qm.questionid]!.nexts[0], qm.qmap);
+              log.info('qmnext title:${qmnext.title}');
+              log.info('       next:${qmnext.qmap[qm.questionid]!.nexts[0]}');
+              log.info('       qmap:${qmnext.qmap}');
+              context.goNamed("questionmeta", extra: qmnext);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('入力をお願いします'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            }
           },
           child: const Text('次へ'),
         ),
@@ -365,8 +390,10 @@ class _type2xWidgetState extends State<type2xWidget> {
         List.filled(widget.qm.qmap[widget.qm.questionid]!.choices.length, 0);
 
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         // const Expanded(child: SizedBox()),
+
         Scrollbar(
           thumbVisibility: true,
           controller: _firstController,
@@ -401,6 +428,7 @@ class _type2xWidgetState extends State<type2xWidget> {
             ],
           ),
         ),
+        const SizedBox(height: 20),
         // const Expanded(child: SizedBox()),
         OutlinedButton(
           style: OutlinedButton.styleFrom(
