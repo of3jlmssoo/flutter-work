@@ -16,10 +16,16 @@ import 'package:logging/logging.dart';
 
 import 'answers.dart';
 import 'questions.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:flutter/foundation.dart';
 
 final log = Logger('MainLogger');
 
-List<AnswerBlock> answers = [];
+// List<AnswerBlock> answers = [];
+Map<String, AnswerBlock> answers = {};
 
 class QuestionMeta {
   final String title;
@@ -47,12 +53,27 @@ final GoRouter _router = GoRouter(
   ],
 );
 
-void main() {
+void main() async {
   Logger.root.level = Level.ALL; // defaults to Level.INFO
   Logger.root.onRecord.listen((LogRecord rec) {
     debugPrint(
         '[${rec.loggerName}] ${rec.level.name}: ${rec.time}: ${rec.message}');
   });
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  if (kDebugMode) {
+    try {
+      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+      await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    } catch (e) {
+      // ignore: avoid_print
+      print(e);
+    }
+  }
 
   runApp(const SurveyApp());
 }
@@ -256,7 +277,8 @@ class QuestionBottom extends StatelessWidget {
         QuestionMeta(qm.title, qm.qmap[qm.questionid]!.nexts[i], qm.qmap);
     context.goNamed("questionmeta", extra: qmnext);
     AnswerBlock ab = AnswerType10(qm.questionid, i == 0 ? true : false);
-    answers.add(ab);
+    // answers.add(ab);
+    answers[qm.questionid] = ab;
     log.info('two choices ${ab.questionid} ${ab.yesno} $answers');
   }
 }
@@ -332,7 +354,8 @@ class Type50Widget extends StatelessWidget {
             // ignore: unnecessary_null_comparison
             if (userinput.isNotEmpty) {
               AnswerType50 at50 = AnswerType50(qm.questionid, userinput);
-              answers.add(at50);
+              // answers.add(at50);
+              answers[qm.questionid] = at50;
               log.info('AnswerType50 : ${at50.questionid} ${at50.answerinput}');
               log.info('answers : $answers');
 
@@ -447,13 +470,15 @@ class _Type2xWidgetState extends State<Type2xWidget> {
 
             if (widget.qm.qmap[widget.qm.questionid].runtimeType == Type20) {
               AnswerType20 at20 = AnswerType20(widget.qm.questionid, selected);
-              answers.add(at20);
+              // answers.add(at20);
+              answers[widget.qm.questionid] = at20;
               log.info('AnswerType20 : ${at20.questionid} ${at20.choices}');
               log.info('answers : $answers');
             }
             if (widget.qm.qmap[widget.qm.questionid].runtimeType == Type21) {
               AnswerType21 at21 = AnswerType21(widget.qm.questionid, selected);
-              answers.add(at21);
+              // answers.add(at21);
+              answers[widget.qm.questionid] = at21;
               log.info('AnswerType20 : ${at21.questionid} ${at21.choices}');
               log.info('answers : $answers');
             }

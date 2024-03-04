@@ -10,26 +10,20 @@ const answersJson = '''
         "answer" : "0",
         "commnet" : "see the type10 definition",
     },
-
 {
     "questionid" : "20",
     "type" : "21",
     "answer" : "0",
-
 },
-
 {
     "questionid" : "21",
     "type" : "21",
     "answer" : "0",
-
 },
-
 {
     "questionid" : "30",
     "type" : "20",
     "answer" : "0",
-
 },
 {
     "questionid" : "40",
@@ -58,7 +52,6 @@ const answersJson = '''
 
 sealed class AnswerBlock {
   AnswerBlock();
-
   // Map<String, dynamic> toJson(AnswerBlock b) {
   Map<String, dynamic> toJson() {
     return switch (runtimeType) {
@@ -76,95 +69,15 @@ sealed class AnswerBlock {
           "answerinput": answerinput
         },
       const (AnswerType40) => {"questionid": questionid, "value": value},
-      const (AnswerType50) => {"questionid": questionid, "answerinput": answerinput},
+      const (AnswerType50) => {
+          "questionid": questionid,
+          "answerinput": answerinput
+        },
       const (AnswerType60) => {"questionid": questionid, "done": done},
       const (AnswerType70) => {"questionid": questionid, "done": done},
       _ => {"questionid": questionid},
     };
   }
-
-  // factory AnswerBlock.fromJson(Map<String, Object?> json) {
-  //   log.info('--- $json ---');
-  //   for (var e in json.keys) {
-  //     log.info('$e ${json[e].runtimeType} ${json[e]}');
-  //   }
-
-  //   log.info('\n');
-  //   return switch (json) {
-  //     {
-  //       'comment': String comment,
-  //       'questionid': String questionid,
-  //       'type': '10',
-  //       'text': String text,
-  //       'nexts': List<dynamic> nexts
-  //     } =>
-  //       AnswerType10(questionid, text, nexts),
-  //     {
-  //       'comment': String comment,
-  //       'questionid': String questionid,
-  //       'type': '60',
-  //       'text': String text,
-  //       'nexts': List<dynamic> nexts
-  //     } =>
-  //       AnswerType60( questionid, text, nexts),
-  //     {
-  //       'comment': String comment,
-  //       'questionid': String questionid,
-  //       'type': '20',
-  //       'text': String text,
-  //       'choices': List<dynamic> choices,
-  //       'nexts': List<dynamic> nexts
-  //     } =>
-  //       AnswerType21( questionid, text, choices, nexts),
-  //     {
-  //       'comment': String comment,
-  //       'questionid': String questionid,
-  //       'type': '21',
-  //       'text': String text,
-  //       'choices': List<dynamic> choices,
-  //       'nexts': List<dynamic> nexts
-  //     } =>
-  //       AnswerType21( questionid, text, choices, nexts),
-  //     {
-  //       'comment': String comment,
-  //       'questionid': String questionid,
-  //       'type': '30',
-  //       'text': String text,
-  //       'choices': List<dynamic> choices,
-  //       'nexts': List<dynamic> nexts
-  //     } =>
-  //       AnswerType30( questionid, text, choices, nexts),
-  //     {
-  //       'comment': String comment,
-  //       'questionid': String questionid,
-  //       'type': '40',
-  //       'text': String text,
-  //       'values': List<dynamic> values,
-  //       'nexts': List<dynamic> nexts
-  //     } =>
-  //       AnswerType40( questionid, text, values, nexts),
-  //     {
-  //       'comment': String comment,
-  //       'questionid': String questionid,
-  //       'type': '31',
-  //       'text': String text,
-  //       'choices': List<dynamic> choices,
-  //       'nexts': List<dynamic> nexts
-  //     } =>
-  //       AnswerType31( questionid, text, choices, nexts),
-  //     {
-  //       'questionid': String questionid,
-  //       'text': String answerinput,
-  //     } =>
-  //       AnswerType50( questionid, answer, nexts),
-  //     {
-  //       'questionid': String questionid,
-  //       'done': bool done,
-  //     } =>
-  //       AnswerType70(questionid, done),
-  //     _ => throw FormatException('Unexpected JSON format $json'),
-  //   };
-  // }
 
   String get questionid => questionid;
   String get type => type;
