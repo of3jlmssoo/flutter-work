@@ -11,6 +11,7 @@
 // MEMO : DateTimeはエンコードする時にtoIso8601String()でISO8601形式の文字列に変換する
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 
@@ -21,6 +22,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter/foundation.dart';
+import 'firebase_providers.dart';
+import 'firebase_login.dart';
+
+bool loggedin = false;
 
 final log = Logger('MainLogger');
 
@@ -75,7 +80,7 @@ void main() async {
     }
   }
 
-  runApp(const SurveyApp());
+  runApp(const ProviderScope(child: SurveyApp()));
 }
 
 class SurveyApp extends StatelessWidget {
@@ -89,16 +94,18 @@ class SurveyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   HomeScreen({super.key}) : questions = Document().getBlocks();
   final Document document = Document();
   // final List<Block> questions;
   final Map<String, QuestionBlock> questions;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // final (title, :modified) = document.metadata;
     final (title, modified: _) = document.metadata;
+    final authstatechanges = ref.watch(authStateChangesProvider);
+    final userinstance = ref.watch(firebaseAuthProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -158,19 +165,108 @@ class HomeScreen extends StatelessWidget {
         ],
         title: const Text('投資に関するアンケート'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TextButton(
-            onPressed: () {
-              QuestionMeta qm = QuestionMeta(title, "10", questions);
-              context.goNamed("questionmeta", extra: qm);
-            },
-            child: const Text('始める'),
-          ),
-        ],
+      body: Center(
+        child: Column(
+          children: [
+            Text(
+              // 'user is ${ref.read(firebaseAuthProvider).authStateChanges()} '),
+              authstatechanges.value == null
+                  ? "ログインしてください"
+                  : "ユーザー名 : ${userinstance.currentUser!.displayName!}",
+            ),
+            const SizedBox(
+              height: 35,
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                disabledBackgroundColor: Colors.grey,
+              ),
+              onPressed: authstatechanges.value != null
+                  ? null
+                  : () async {
+                      log.info('Firebase login Button Pressed');
+                      loggedin = await firebaseLoginController(context);
+                      if (!loggedin) {
+                        log.info('loggedin == null $loggedin');
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: const Duration(seconds: 5),
+                            content: const Text('Please login again'),
+                            action: SnackBarAction(
+                                label: 'Close', onPressed: () {}),
+                          ),
+                        );
+                      } else {
+                        log.info('loggedin != null $loggedin');
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: const Duration(seconds: 5),
+                            content: const Text('You are logged in!'),
+                            action: SnackBarAction(
+                                label: 'Close', onPressed: () {}),
+                          ),
+                        );
+                      }
+                    },
+              child: const Text('ログイン'),
+            ),
+            ElevatedButton(
+              onPressed: authstatechanges.value == null
+                  ? null
+                  : () {
+                      // userinstance.signOut();
+                      QuestionMeta qm = QuestionMeta(title, "10", questions);
+                      context.goNamed("questionmeta", extra: qm);
+                    },
+              style: ElevatedButton.styleFrom(
+                disabledBackgroundColor: Colors.grey,
+              ),
+              child: const Text('始める'),
+            ),
+            ElevatedButton(
+              onPressed: authstatechanges.value == null
+                  ? null
+                  : () {
+                      userinstance.signOut();
+                    },
+              style: ElevatedButton.styleFrom(
+                disabledBackgroundColor: Colors.grey,
+              ),
+              child: const Text('ログアウト'),
+            ),
+            // ElevatedButton(
+            //   style: ElevatedButton.styleFrom(
+            //     disabledBackgroundColor: Colors.grey,
+            //   ),
+            //   onPressed: authstatechanges.value == null
+            //       ? null
+            //       : () async {
+            //           if (userinstance.currentUser == null) {
+            //             loggedin = await firebaseLoginController(context);
+            //           } else {ろぐあうと
+            //             context.go("/fbdataget");
+            //           }
+            //         },
+            //   child: const Text('レポート一覧'),
+            // ),
+          ],
+        ),
       ),
+      // body: Column(
+      //   mainAxisAlignment: MainAxisAlignment.center,
+      //   crossAxisAlignment: CrossAxisAlignment.stretch,
+      //   children: [
+      //     TextButton(
+      //       onPressed: () {
+      //         QuestionMeta qm = QuestionMeta(title, "10", questions);
+      //         context.goNamed("questionmeta", extra: qm);
+      //       },
+      //       child: const Text('始める'),
+      //     ),
+      //   ],
+      // ),
     );
   }
 }
