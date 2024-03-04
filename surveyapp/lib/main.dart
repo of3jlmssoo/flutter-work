@@ -10,7 +10,9 @@
 
 // MEMO : DateTimeはエンコードする時にtoIso8601String()でISO8601形式の文字列に変換する
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
@@ -177,64 +179,73 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(
               height: 35,
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                disabledBackgroundColor: Colors.grey,
+            Visibility(
+              visible: authstatechanges.value == null ? true : false,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  disabledBackgroundColor: Colors.grey,
+                ),
+                onPressed: authstatechanges.value != null
+                    ? null
+                    : () async {
+                        log.info('Firebase login Button Pressed');
+                        loggedin = await firebaseLoginController(context);
+                        if (!loggedin) {
+                          log.info('loggedin == null $loggedin');
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              duration: const Duration(seconds: 5),
+                              content: const Text('Please login again'),
+                              action: SnackBarAction(
+                                  label: 'Close', onPressed: () {}),
+                            ),
+                          );
+                        } else {
+                          log.info('loggedin != null $loggedin');
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              duration: const Duration(seconds: 5),
+                              content: const Text('You are logged in!'),
+                              action: SnackBarAction(
+                                  label: 'Close', onPressed: () {}),
+                            ),
+                          );
+                        }
+                      },
+                child: const Text('ログイン'),
               ),
-              onPressed: authstatechanges.value != null
-                  ? null
-                  : () async {
-                      log.info('Firebase login Button Pressed');
-                      loggedin = await firebaseLoginController(context);
-                      if (!loggedin) {
-                        log.info('loggedin == null $loggedin');
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            duration: const Duration(seconds: 5),
-                            content: const Text('Please login again'),
-                            action: SnackBarAction(
-                                label: 'Close', onPressed: () {}),
-                          ),
-                        );
-                      } else {
-                        log.info('loggedin != null $loggedin');
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            duration: const Duration(seconds: 5),
-                            content: const Text('You are logged in!'),
-                            action: SnackBarAction(
-                                label: 'Close', onPressed: () {}),
-                          ),
-                        );
-                      }
-                    },
-              child: const Text('ログイン'),
             ),
-            ElevatedButton(
-              onPressed: authstatechanges.value == null
-                  ? null
-                  : () {
-                      // userinstance.signOut();
-                      QuestionMeta qm = QuestionMeta(title, "10", questions);
-                      context.goNamed("questionmeta", extra: qm);
-                    },
-              style: ElevatedButton.styleFrom(
-                disabledBackgroundColor: Colors.grey,
+            Visibility(
+              visible: authstatechanges.value == null ? false : true,
+              child: ElevatedButton(
+                onPressed: authstatechanges.value == null
+                    ? null
+                    : () {
+                        // userinstance.signOut();
+                        QuestionMeta qm = QuestionMeta(title, "10", questions);
+                        context.goNamed("questionmeta", extra: qm);
+                      },
+                style: ElevatedButton.styleFrom(
+                  disabledBackgroundColor: Colors.grey,
+                ),
+                child: const Text('始める'),
               ),
-              child: const Text('始める'),
             ),
-            ElevatedButton(
-              onPressed: authstatechanges.value == null
-                  ? null
-                  : () {
-                      userinstance.signOut();
-                    },
-              style: ElevatedButton.styleFrom(
-                disabledBackgroundColor: Colors.grey,
+            Visibility(
+              visible: authstatechanges.value == null ? false : true,
+              child: ElevatedButton(
+                onPressed: authstatechanges.value == null
+                    ? null
+                    : () {
+                        userinstance.signOut();
+                      },
+                style: ElevatedButton.styleFrom(
+                  disabledBackgroundColor: Colors.grey,
+                ),
+                child: const Text('ログアウト'),
               ),
-              child: const Text('ログアウト'),
             ),
             // ElevatedButton(
             //   style: ElevatedButton.styleFrom(
