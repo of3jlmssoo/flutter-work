@@ -1,3 +1,5 @@
+// firebase emulators:start --import ./emulators_data --export-on-exit
+
 // TODO : プログレスバーの処理 計算で処理する
 // DONE : JSON decode処理 metadata(サンプルそのまま)
 // DONE : JSON decode処理 questionsパート
@@ -157,6 +159,12 @@ class HomeScreen extends ConsumerWidget {
                 child: const Text('answer check'),
               ),
               MenuItemButton(
+                child: const Text('check if existing after login'),
+                onPressed: () {
+                  checkAnswered(userinstance);
+                },
+              ),
+              MenuItemButton(
                 child: const Text('main'),
                 onPressed: () {
                   log.info('main pressed');
@@ -279,6 +287,30 @@ class HomeScreen extends ConsumerWidget {
       //   ],
       // ),
     );
+  }
+
+  void checkAnswered(FirebaseAuth userinstance) {
+    log.info(
+        'check if existing after login : ${userinstance.currentUser!.email}');
+
+    FirebaseFirestore.instance
+        .collection("USERS")
+        .doc(userinstance.currentUser!.email)
+        .get()
+        .then((doc) {
+      if (!doc.exists) {
+        FirebaseFirestore.instance
+            .collection("USERS")
+            .doc(userinstance.currentUser!.email)
+            .set({
+          "email": userinstance.currentUser!.email,
+        }).catchError((_) {
+          log.info("user check not successful!");
+        });
+      } else {
+        log.info('already answered');
+      }
+    });
   }
 }
 

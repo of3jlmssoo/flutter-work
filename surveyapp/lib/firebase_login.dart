@@ -9,7 +9,7 @@ import 'constants.dart';
 import 'firebase_options.dart';
 import 'firebase_providers.dart';
 
-final log = Logger('FB-loginLogger');
+final log = Logger('loginLogger');
 
 Future<bool> firebaseLoginController(BuildContext context) async {
   var result = await Navigator.push(
@@ -130,7 +130,8 @@ class _FirebaseLoginState extends ConsumerState<FirebaseLogin> {
                             .signInWithEmailAndPassword(
                                 email: email, password: password);
                         log.info('after  signin : $userinstance');
-                        log.info('FirebaseAuth..signInWithEmail authed!');
+                        log.info(
+                            'FirebaseAuth..signInWithEmail authed! ${userCredential.user!.email}');
                         showSpinner = false;
                         if (!context.mounted) {
                           return;

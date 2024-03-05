@@ -92,7 +92,7 @@ class GetSampleDataState extends ConsumerState<GetSampleData> {
               height: 200,
               color: Colors.blue[200],
               child: Center(
-                  child: Padding(addNewReport
+                  child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   children: [
