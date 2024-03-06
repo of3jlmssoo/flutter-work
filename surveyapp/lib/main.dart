@@ -161,7 +161,16 @@ class HomeScreen extends ConsumerWidget {
               MenuItemButton(
                 child: const Text('check if existing after login'),
                 onPressed: () {
-                  checkAnswered(userinstance);
+                  checkAnswered(userinstance, context);
+                },
+              ),
+              MenuItemButton(
+                child: const Text('delete data'),
+                onPressed: () {
+                  deleteFirestoreDoc(userinstance, "10", "yes");
+                  deleteFirestoreDoc(userinstance, "10", "no");
+                  deleteFirestoreDoc(userinstance, "40", "yes");
+                  deleteFirestoreDoc(userinstance, "40", "no");
                 },
               ),
               MenuItemButton(
@@ -232,6 +241,7 @@ class HomeScreen extends ConsumerWidget {
                     ? null
                     : () {
                         // userinstance.signOut();
+                        checkAnswered(userinstance, context);
                         QuestionMeta qm = QuestionMeta(title, "10", questions);
                         context.goNamed("questionmeta", extra: qm);
                       },
@@ -255,41 +265,29 @@ class HomeScreen extends ConsumerWidget {
                 child: const Text('ログアウト'),
               ),
             ),
-            // ElevatedButton(
-            //   style: ElevatedButton.styleFrom(
-            //     disabledBackgroundColor: Colors.grey,
-            //   ),
-            //   onPressed: authstatechanges.value == null
-            //       ? null
-            //       : () async {
-            //           if (userinstance.currentUser == null) {
-            //             loggedin = await firebaseLoginController(context);
-            //           } else {ろぐあうと
-            //             context.go("/fbdataget");
-            //           }
-            //         },
-            //   child: const Text('レポート一覧'),
-            // ),
           ],
         ),
       ),
-      // body: Column(
-      //   mainAxisAlignment: MainAxisAlignment.center,
-      //   crossAxisAlignment: CrossAxisAlignment.stretch,
-      //   children: [
-      //     TextButton(
-      //       onPressed: () {
-      //         QuestionMeta qm = QuestionMeta(title, "10", questions);
-      //         context.goNamed("questionmeta", extra: qm);
-      //       },
-      //       child: const Text('始める'),
-      //     ),
-      //   ],
-      // ),
     );
   }
 
-  void checkAnswered(FirebaseAuth userinstance) {
+  void deleteFirestoreDoc(
+      FirebaseAuth userinstance, String questionid, String val) {
+    FirebaseFirestore.instance
+        .collection(questionid)
+        .doc("answers")
+        .collection(val)
+        .doc(userinstance.currentUser!.email)
+        .delete()
+        .then(
+          (doc) => log.info(
+              "Document deleted $questionid $val ${userinstance.currentUser!.email}"),
+          onError: (e) => log.info(
+              "Error delete document  $questionid $val ${userinstance.currentUser!.email} $e"),
+        );
+  }
+
+  void checkAnswered(FirebaseAuth userinstance, BuildContext context) {
     log.info(
         'check if existing after login : ${userinstance.currentUser!.email}');
 
@@ -297,20 +295,56 @@ class HomeScreen extends ConsumerWidget {
         .collection("USERS")
         .doc(userinstance.currentUser!.email)
         .get()
-        .then((doc) {
-      if (!doc.exists) {
-        FirebaseFirestore.instance
-            .collection("USERS")
-            .doc(userinstance.currentUser!.email)
-            .set({
-          "email": userinstance.currentUser!.email,
-        }).catchError((_) {
-          log.info("user check not successful!");
-        });
-      } else {
-        log.info('already answered');
-      }
-    });
+        .then(
+      (doc) {
+        if (!doc.exists) {
+          FirebaseFirestore.instance
+              .collection("USERS")
+              .doc(userinstance.currentUser!.email)
+              .set({
+            "email": userinstance.currentUser!.email,
+          }).catchError((_) {
+            log.info("user check not successful!");
+          });
+        } else {
+          log.info('already answered');
+
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('ご回答済み'),
+              content:
+                  const Text('既にご回答済みです。ご回答を削除しますか？\n\n削除しない場合このまま終了してください'),
+              actions: <Widget>[
+                // const TextButton(
+                //   // onPressed: () => Navigator.pop(context, 'Cancel'),
+                //   onPressed: null,
+                //   // onPressed: () => Navigator.pop(context, 'Cancel'),
+                //   child: Text('削除せず終わる'),
+                // ),
+                TextButton(
+                  // TODO: データ削除処理
+                  onPressed: () {
+                    FirebaseFirestore.instance
+                        .collection("USERS")
+                        .doc(userinstance.currentUser!.email)
+                        .delete()
+                        .then(
+                          (doc) => log.info(
+                              "Document deleted USERS ${userinstance.currentUser!.email}"),
+                          onError: (e) => log.info(
+                              "Error delete document USERS ${userinstance.currentUser!.email} $e"),
+                        );
+                    GoRouter.of(context).pop();
+                  },
+                  child: const Text('削除する'),
+                ),
+              ],
+            ),
+          );
+        }
+      },
+    );
   }
 }
 
@@ -422,13 +456,14 @@ class QuestionBottom extends StatelessWidget {
   }
 }
 
-class Type70Widget extends StatelessWidget {
+class Type70Widget extends ConsumerWidget {
   const Type70Widget({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userinstance = ref.watch(firebaseAuthProvider);
     return Column(
       children: [
         const SizedBox(height: 20),
@@ -442,11 +477,79 @@ class Type70Widget extends StatelessWidget {
           ),
           onPressed: () {
             log.info('Type70 answers:$answers');
+            answers.forEach(
+              (key, value) {
+                log.info('key $key and value $value and ${value.runtimeType}');
+                var answerType = value.runtimeType;
+                switch (answerType) {
+                  case const (AnswerType10):
+                    log.info('$answerType ${value.questionid} ${value.yesno}');
+                    addDocumentType10(answerType.toString(), userinstance,
+                        value.questionid, value.yesno == true ? "yes" : "no");
+
+                  case const (AnswerType60) || const (AnswerType70):
+                    log.info('$answerType ${value.questionid} ${value.done}');
+
+                  case const (AnswerType21) || const (AnswerType20):
+                    log.info(
+                        '$answerType ${value.questionid} ${value.choices}');
+                    addDocumentType2x30(answerType.toString(), userinstance,
+                        value.questionid, value.choices);
+
+                  case const (AnswerType40):
+                    log.info('$answerType ${value.questionid} ${value.value}');
+
+                  case const (AnswerType31) || const (AnswerType30):
+                    log.info(
+                        '$answerType ${value.questionid} ${value.choices}  ${value.answerinput}');
+                    addDocumentType2x30(answerType.toString(), userinstance,
+                        value.questionid, value.choices);
+
+                  case const (AnswerType50):
+                    log.info(
+                        '$answerType ${value.questionid} ${value.answerinput}');
+                  // case const (AnswerType70):
+                  //   log.info('${value.questionid} ${value.done}');
+
+                  default:
+                    throw const FormatException(
+                        'Invalid when sending data to firestore');
+                }
+              },
+            );
           },
           child: const Text('送信'),
         ),
       ],
     );
+  }
+
+  void addDocumentType2x30(String answerType, FirebaseAuth userinstance,
+      String questionid, List<dynamic> values) {
+    for (var v in values) {
+      FirebaseFirestore.instance
+          .collection(questionid)
+          .doc("answers")
+          .collection(v.toString())
+          .doc(userinstance.currentUser!.email)
+          .set({
+        "email": userinstance.currentUser!.email,
+      }).onError((e, _) => log.info(
+              "Error writing document: $answerType $questionid $values $e"));
+    }
+  }
+
+  void addDocumentType10(String answerType, FirebaseAuth userinstance,
+      String questionid, String yesno) {
+    FirebaseFirestore.instance
+        .collection(questionid)
+        .doc("answers")
+        .collection(yesno)
+        .doc(userinstance.currentUser!.email)
+        .set({
+      "email": userinstance.currentUser!.email,
+    }).onError((e, _) => log
+            .info("Error writing document: $answerType $questionid $yesno $e"));
   }
 }
 
