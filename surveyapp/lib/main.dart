@@ -12,22 +12,20 @@
 
 // MEMO : DateTimeはエンコードする時にtoIso8601String()でISO8601形式の文字列に変換する
 
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 
 import 'answers.dart';
-import 'questions.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:flutter/foundation.dart';
-import 'firebase_providers.dart';
 import 'firebase_login.dart';
+import 'firebase_options.dart';
+import 'firebase_providers.dart';
+import 'questions.dart';
 
 bool loggedin = false;
 
@@ -167,10 +165,88 @@ class HomeScreen extends ConsumerWidget {
               MenuItemButton(
                 child: const Text('delete data'),
                 onPressed: () {
-                  deleteFirestoreDoc(userinstance, "10", "yes");
-                  deleteFirestoreDoc(userinstance, "10", "no");
-                  deleteFirestoreDoc(userinstance, "40", "yes");
-                  deleteFirestoreDoc(userinstance, "40", "no");
+                  log.info('delete data');
+                  // FirebaseFirestore.instance
+                  //     .collection("20")
+                  //     .doc("answers")
+                  //     .collection("2")
+                  //     .where("email",
+                  //         isEqualTo: userinstance.currentUser!.email)
+                  //     .get()
+                  //     .then(
+                  //   (querySnapshot) {
+                  //     log.info("Successfully completed");
+                  //     for (var docSnapshot in querySnapshot.docs) {
+                  //       log.info('${docSnapshot.id} => ${docSnapshot.data()}');
+                  //     }
+                  //   },
+                  //   onError: (e) => log.info("Error completing: $e"),
+                  // );
+
+                  log.info('keys : ${answers.keys}');
+                  for (var k in answers.keys) {
+                    switch (answers[k].runtimeType) {
+                      case const (AnswerType10) ||
+                            const (AnswerType60) ||
+                            const (AnswerType70):
+                        log.info('--> AnswerType10/60/70 ');
+                      case const (AnswerType50):
+                        log.info('--> AnswerType50 ');
+                      case const (AnswerType30) || const (AnswerType31):
+                        log.info('--> AnswerType30/31 ');
+                      case const (AnswerType20) ||
+                            const (AnswerType21) ||
+                            const (AnswerType40):
+                        log.info('--> AnswerType20/21/40 ');
+                    }
+                  }
+
+                  // deleteFireStoreType202140
+                  //
+                  // String List<dynamic>
+                  // AnswerType40
+                  // AnswerType20
+                  // AnswerType21
+                  ///////////////////////
+                  // 30: Instance of 'Type20',
+                  // 20: Instance of 'Type21',
+                  // 21: Instance of 'Type21',
+                  // 41: Instance of 'Type40',
+
+                  // deleteFireStoreType3031 calls delete202140
+                  //
+                  // String List<dynamic> String
+                  // AnswerType30
+                  // AnswerType31
+                  ///////////////////////
+                  // 42: Instance of 'Type31',
+
+                  // deleteFireStoreType50
+                  //
+                  // String String
+                  // AnswerType50
+                  ///////////////////////
+                  // 50: Instance of 'Type50',
+
+                  // deleteFireStoreType106070
+                  //
+                  // String and bool
+                  // AnswerType60
+                  // AnswerType70
+                  // AnswerType10
+                  ///////////////////////
+                  // 11: Instance of 'Type60',
+                  // 60: Instance of 'Type70'}
+                  // 10: Instance of 'Type10',
+                  // 40: Instance of 'Type10',
+                  // deleteFireStoreType106070(userinstance, "11", "yes");
+                  // deleteFireStoreType106070(userinstance, "11", "no");
+                  // deleteFireStoreType106070(userinstance, "60", "yes");
+                  // deleteFireStoreType106070(userinstance, "60", "no");
+                  // deleteFireStoreType106070(userinstance, "10", "yes");
+                  // deleteFireStoreType106070(userinstance, "10", "no");
+                  // deleteFireStoreType106070(userinstance, "40", "yes");
+                  // deleteFireStoreType106070(userinstance, "40", "no");
                 },
               ),
               MenuItemButton(
@@ -271,7 +347,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void deleteFirestoreDoc(
+  void deleteFireStoreType106070(
       FirebaseAuth userinstance, String questionid, String val) {
     FirebaseFirestore.instance
         .collection(questionid)
