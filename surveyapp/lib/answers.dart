@@ -88,16 +88,22 @@ sealed class AnswerBlock {
   bool get yesno => yesno;
 }
 
-class AnswerType70 extends AnswerBlock {
+class AnswerType10 extends AnswerBlock {
   final String questionid;
-  final bool done;
-  AnswerType70(this.questionid, this.done);
+  final bool yesno; // true for yes, balse for no
+  AnswerType10(this.questionid, this.yesno);
 }
 
-class AnswerType50 extends AnswerBlock {
+class AnswerType20 extends AnswerBlock {
   final String questionid;
-  final String answerinput;
-  AnswerType50(this.questionid, this.answerinput);
+  final List<dynamic> choices;
+  AnswerType20(this.questionid, this.choices);
+}
+
+class AnswerType21 extends AnswerBlock {
+  final String questionid;
+  final List<dynamic> choices;
+  AnswerType21(this.questionid, this.choices);
 }
 
 class AnswerType30 extends AnswerBlock {
@@ -120,16 +126,10 @@ class AnswerType40 extends AnswerBlock {
   AnswerType40(this.questionid, this.value);
 }
 
-class AnswerType20 extends AnswerBlock {
+class AnswerType50 extends AnswerBlock {
   final String questionid;
-  final List<dynamic> choices;
-  AnswerType20(this.questionid, this.choices);
-}
-
-class AnswerType21 extends AnswerBlock {
-  final String questionid;
-  final List<dynamic> choices;
-  AnswerType21(this.questionid, this.choices);
+  final String answerinput;
+  AnswerType50(this.questionid, this.answerinput);
 }
 
 class AnswerType60 extends AnswerBlock {
@@ -138,8 +138,8 @@ class AnswerType60 extends AnswerBlock {
   AnswerType60(this.questionid, this.done);
 }
 
-class AnswerType10 extends AnswerBlock {
+class AnswerType70 extends AnswerBlock {
   final String questionid;
-  final bool yesno; // true for yes, balse for no
-  AnswerType10(this.questionid, this.yesno);
+  final bool done;
+  AnswerType70(this.questionid, this.done);
 }

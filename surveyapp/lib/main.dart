@@ -619,6 +619,7 @@ class Type70Widget extends ConsumerWidget {
     );
   }
 
+  // Todo: process for type30 and type31
   void addDocumentType2x30(String answerType, FirebaseAuth userinstance,
       String questionid, List<dynamic> values) {
     for (var v in values) {
@@ -747,7 +748,7 @@ class _Type2xWidgetState extends ConsumerState<Type2xWidget> {
   final ScrollController _firstController = ScrollController();
   @override
   Widget build(BuildContext context) {
-    late String userinput = '';
+    String userinputTicker = '';
     var isChecked =
         List.filled(widget.qm.qmap[widget.qm.questionid]!.choices.length, 0);
 
@@ -797,7 +798,9 @@ class _Type2xWidgetState extends ConsumerState<Type2xWidget> {
         const SizedBox(height: 20),
         Visibility(
           // visible: ref.watch(type31InputProvider) == true ? true : false,
-          visible: true,
+          visible: widget.qm.qmap[widget.qm.questionid].runtimeType == Type31
+              ? true
+              : false,
           child: Container(
             // width: 300,
             decoration: BoxDecoration(
@@ -813,7 +816,7 @@ class _Type2xWidgetState extends ConsumerState<Type2xWidget> {
                   border: InputBorder.none),
               onChanged: (value) {
                 log.info('type50 -- $value');
-                userinput = value;
+                userinputTicker = value;
               },
             ),
           ),
@@ -836,24 +839,50 @@ class _Type2xWidgetState extends ConsumerState<Type2xWidget> {
 
             if (widget.qm.qmap[widget.qm.questionid].runtimeType == Type20) {
               AnswerType20 at20 = AnswerType20(widget.qm.questionid, selected);
-              // answers.add(at20);
               answers[widget.qm.questionid] = at20;
               log.info('AnswerType20 : ${at20.questionid} ${at20.choices}');
               log.info('answers : $answers');
             }
             if (widget.qm.qmap[widget.qm.questionid].runtimeType == Type21) {
               AnswerType21 at21 = AnswerType21(widget.qm.questionid, selected);
-              // answers.add(at21);
               answers[widget.qm.questionid] = at21;
               log.info('AnswerType20 : ${at21.questionid} ${at21.choices}');
               log.info('answers : $answers');
             }
-
+            if (widget.qm.qmap[widget.qm.questionid].runtimeType == Type30) {
+              AnswerType30 at30 =
+                  AnswerType30(widget.qm.questionid, selected, userinputTicker);
+              answers[widget.qm.questionid] = at30;
+              log.info(
+                  'AnswerType30 : ${at30.questionid} ${at30.choices} ${at30.answerinput}');
+              log.info('answers : $answers');
+            }
+            if (widget.qm.qmap[widget.qm.questionid].runtimeType == Type31) {
+              AnswerType31 at31 =
+                  AnswerType31(widget.qm.questionid, selected, userinputTicker);
+              answers[widget.qm.questionid] = at31;
+              log.info(
+                  'AnswerType31 : ${at31.questionid} ${at31.choices} ${at31.answerinput}');
+              log.info('answers : $answers');
+            }
             var questionType = widget.qm.qmap[widget.qm.questionid].runtimeType;
+
+            log.info(
+                'questionType : $questionType, isChecked.last ${isChecked.last} userinputTicker.length ${userinputTicker.length}');
             if ((questionType == Type21 &&
                     isChecked.fold(0, (e, t) => e + t) > 0) ||
                 (questionType == Type20 &&
-                    isChecked.fold(0, (e, t) => e + t) == 1)) {
+                    isChecked.fold(0, (e, t) => e + t) == 1) ||
+                (questionType == Type31 &&
+                        isChecked.fold(0, (e, t) => e + t) > 0 &&
+                        isChecked.last == 1
+                    ? userinputTicker.length > 0
+                    : true) ||
+                (questionType == Type30 &&
+                        isChecked.fold(0, (e, t) => e + t) == 1 &&
+                        isChecked.last == 1
+                    ? userinputTicker.length > 0
+                    : true)) {
               log.info(
                   'nexts          : ${widget.qm.qmap[widget.qm.questionid]!.nexts}');
               log.info('isChecked : $isChecked');
