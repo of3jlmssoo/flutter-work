@@ -166,51 +166,59 @@ class HomeScreen extends ConsumerWidget {
                 child: const Text('delete data'),
                 onPressed: () {
                   log.info('delete data');
+
+                  // // Query
                   // FirebaseFirestore.instance
                   //     .collection("20")
                   //     .doc("answers")
-                  //     .collection("2")
+                  //     .collection("0")
                   //     .where("email",
                   //         isEqualTo: userinstance.currentUser!.email)
                   //     .get()
                   //     .then(
                   //   (querySnapshot) {
-                  //     log.info("Successfully completed");
-                  //     for (var docSnapshot in querySnapshot.docs) {
-                  //       log.info('${docSnapshot.id} => ${docSnapshot.data()}');
-                  //     }
+                  //     log.info(
+                  //         "firestore query ${userinstance.currentUser!.email} Successfully completed found ${querySnapshot.size} records");
+                  //     if (querySnapshot.docs.isNotEmpty)
+                  //       for (var docSnapshot in querySnapshot.docs) {
+                  //         log.info(
+                  //             '${docSnapshot.id} => ${docSnapshot.data()}');
+                  //       }
                   //   },
                   //   onError: (e) => log.info("Error completing: $e"),
                   // );
 
-                  log.info('keys : ${answers.keys}');
-                  for (var k in answers.keys) {
-                    switch (answers[k].runtimeType) {
-                      case const (AnswerType10) ||
-                            const (AnswerType60) ||
-                            const (AnswerType70):
+                  log.info('keys : ${questions.keys}');
+                  for (var k in questions.keys) {
+                    log.info('--> ${questions[k].runtimeType}');
+                    switch (questions[k].runtimeType) {
+                      case const (Type10) || const (Type60) || const (Type70):
                         log.info('--> AnswerType10/60/70 ');
-                      case const (AnswerType50):
+                      case const (Type50):
                         log.info('--> AnswerType50 ');
-                      case const (AnswerType30) || const (AnswerType31):
+                      case const (Type30) || const (Type31):
                         log.info('--> AnswerType30/31 ');
-                      case const (AnswerType20) ||
-                            const (AnswerType21) ||
-                            const (AnswerType40):
-                        log.info('--> AnswerType20/21/40 ');
+                      case const (Type20) || const (Type21) || const (Type40):
+                        log.info(
+                            '--> AnswerType20/21/40 ${questions[k]!.choices.length}');
                     }
                   }
 
-                  // deleteFireStoreType202140
+                  // deleteFireStoreType2021
                   //
-                  // String List<dynamic>
-                  // AnswerType40
+                  // String List<dynamic> choices
                   // AnswerType20
                   // AnswerType21
                   ///////////////////////
                   // 30: Instance of 'Type20',
                   // 20: Instance of 'Type21',
                   // 21: Instance of 'Type21',
+
+                  // deleteFireStoreType40
+                  //
+                  // String List<dynamic> values
+                  // AnswerType40
+                  ///////////////////////
                   // 41: Instance of 'Type40',
 
                   // deleteFireStoreType3031 calls delete202140
@@ -468,6 +476,17 @@ class QuestionBottom extends StatelessWidget {
       const (Type10) => type10Widget(context),
       const (Type20) => Type2xWidget(qm: qm),
       const (Type21) => Type2xWidget(qm: qm),
+      const (Type31) => Type2xWidget(qm: qm),
+      // const (Type31) => (const Column(
+      //     children: [
+      //       Row(
+      //         mainAxisAlignment: MainAxisAlignment.center,
+      //         children: [
+      //           Text('abcc'),
+      //         ],
+      //       )
+      //     ],
+      //   )),
       const (Type50) => Type50Widget(qm: qm),
       const (Type60) => const Type60Widget(),
       const (Type70) => const Type70Widget(),
@@ -805,10 +824,20 @@ class _Type2xWidgetState extends State<Type2xWidget> {
                     isChecked.fold(0, (e, t) => e + t) > 0) ||
                 (questionType == Type20 &&
                     isChecked.fold(0, (e, t) => e + t) == 1)) {
-              log.info('${widget.qm.qmap[widget.qm.questionid]!.nexts}');
+              log.info(
+                  'nexts          : ${widget.qm.qmap[widget.qm.questionid]!.nexts}');
+              log.info('isChecked : $isChecked');
+
+              final int next =
+                  widget.qm.qmap[widget.qm.questionid]!.nexts.length == 1
+                      ? 0
+                      : isChecked.indexOf(1);
+
               QuestionMeta qmnext = QuestionMeta(
                   widget.qm.title,
-                  widget.qm.qmap[widget.qm.questionid]!.nexts[0],
+                  // TODO: now always selext the first choice
+                  // widget.qm.qmap[widget.qm.questionid]!.nexts[0],
+                  widget.qm.qmap[widget.qm.questionid]!.nexts[next],
                   widget.qm.qmap);
               log.info('qmnext title:${qmnext.title}');
               log.info(

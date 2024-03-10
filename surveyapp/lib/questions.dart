@@ -263,50 +263,12 @@ sealed class QuestionBlock {
   List<dynamic> get choices => choices;
 }
 
-class Type70 extends QuestionBlock {
+class Type10 extends QuestionBlock {
   final String comment;
   final String questionid;
   final String text;
   final List<dynamic> nexts;
-  Type70(this.comment, this.questionid, this.text, this.nexts);
-}
-
-class Type50 extends QuestionBlock {
-  final String comment;
-  final String questionid;
-  final String text;
-  final List<dynamic> nexts;
-  Type50(this.comment, this.questionid, this.text, this.nexts);
-}
-
-class Type31 extends QuestionBlock {
-  final String comment;
-  final String questionid;
-  final String text;
-  @override
-  final List<dynamic> choices;
-  final List<dynamic> nexts;
-  Type31(this.comment, this.questionid, this.text, this.choices, this.nexts);
-}
-
-class Type40 extends QuestionBlock {
-  final String comment;
-  final String questionid;
-  final String text;
-  final List<dynamic> values;
-  final List<dynamic> nexts;
-  Type40(this.comment, this.questionid, this.text, this.values, this.nexts);
-}
-
-class Type30 extends QuestionBlock {
-  final String comment;
-  final String questionid;
-  final String text;
-  // final List<dynamic> choices;
-  @override
-  final List<dynamic> choices;
-  final List<dynamic> nexts;
-  Type30(this.comment, this.questionid, this.text, this.choices, this.nexts);
+  Type10(this.comment, this.questionid, this.text, this.nexts);
 }
 
 class Type20 extends QuestionBlock {
@@ -329,6 +291,44 @@ class Type21 extends QuestionBlock {
   Type21(this.comment, this.questionid, this.text, this.choices, this.nexts);
 }
 
+class Type30 extends QuestionBlock {
+  final String comment;
+  final String questionid;
+  final String text;
+  // final List<dynamic> choices;
+  @override
+  final List<dynamic> choices;
+  final List<dynamic> nexts;
+  Type30(this.comment, this.questionid, this.text, this.choices, this.nexts);
+}
+
+class Type31 extends QuestionBlock {
+  final String comment;
+  final String questionid;
+  final String text;
+  @override
+  final List<dynamic> choices;
+  final List<dynamic> nexts;
+  Type31(this.comment, this.questionid, this.text, this.choices, this.nexts);
+}
+
+class Type40 extends QuestionBlock {
+  final String comment;
+  final String questionid;
+  final String text;
+  final List<dynamic> values;
+  final List<dynamic> nexts;
+  Type40(this.comment, this.questionid, this.text, this.values, this.nexts);
+}
+
+class Type50 extends QuestionBlock {
+  final String comment;
+  final String questionid;
+  final String text;
+  final List<dynamic> nexts;
+  Type50(this.comment, this.questionid, this.text, this.nexts);
+}
+
 class Type60 extends QuestionBlock {
   final String comment;
   final String questionid;
@@ -337,29 +337,13 @@ class Type60 extends QuestionBlock {
   Type60(this.comment, this.questionid, this.text, this.nexts);
 }
 
-class Type10 extends QuestionBlock {
+class Type70 extends QuestionBlock {
   final String comment;
   final String questionid;
   final String text;
   final List<dynamic> nexts;
-  Type10(this.comment, this.questionid, this.text, this.nexts);
+  Type70(this.comment, this.questionid, this.text, this.nexts);
 }
-
-// class HeaderBlock extends Block {
-//   final String text;
-//   HeaderBlock(this.text);
-// }
-//
-// class ParagraphBlock extends Block {
-//   final String text;
-//   ParagraphBlock(this.text);
-// }
-//
-// class CheckboxBlock extends Block {
-//   final String text;
-//   final bool isChecked;
-//   CheckboxBlock(this.text, this.isChecked);
-// }
 
 class BlockWidget extends StatelessWidget {
   final QuestionBlock block;
