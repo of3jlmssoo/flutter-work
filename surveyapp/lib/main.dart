@@ -731,7 +731,7 @@ class Type60Widget extends StatelessWidget {
   }
 }
 
-class Type2xWidget extends StatefulWidget {
+class Type2xWidget extends ConsumerStatefulWidget {
   const Type2xWidget({
     super.key,
     required this.qm,
@@ -740,13 +740,14 @@ class Type2xWidget extends StatefulWidget {
   final QuestionMeta qm;
 
   @override
-  State<Type2xWidget> createState() => _Type2xWidgetState();
+  ConsumerState<Type2xWidget> createState() => _Type2xWidgetState();
 }
 
-class _Type2xWidgetState extends State<Type2xWidget> {
+class _Type2xWidgetState extends ConsumerState<Type2xWidget> {
   final ScrollController _firstController = ScrollController();
   @override
   Widget build(BuildContext context) {
+    late String userinput = '';
     var isChecked =
         List.filled(widget.qm.qmap[widget.qm.questionid]!.choices.length, 0);
 
@@ -782,11 +783,39 @@ class _Type2xWidgetState extends State<Type2xWidget> {
                         isChecked[i] = v == true ? 1 : 0;
                         log.info('_isChecked : $isChecked');
                       });
+                      log.info('-------> ${isChecked.last}');
+                      // isChecked.last == 1
+                      //     ? ref.read(type31InputProvider.notifier).toTrue()
+                      //     : ref.read(type31InputProvider.notifier).toFalse();
                     },
                     controlAffinity: ListTileControlAffinity.leading,
                   ),
                 )
             ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        Visibility(
+          // visible: ref.watch(type31InputProvider) == true ? true : false,
+          visible: true,
+          child: Container(
+            // width: 300,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                    width: 1, color: Colors.black, style: BorderStyle.solid)),
+            child: TextField(
+              minLines: 1,
+              maxLines: 1,
+              decoration: const InputDecoration(
+                  hintText: '一番好きな銘柄をここに入力してください',
+                  contentPadding: EdgeInsets.all(15),
+                  border: InputBorder.none),
+              onChanged: (value) {
+                log.info('type50 -- $value');
+                userinput = value;
+              },
+            ),
           ),
         ),
         const SizedBox(height: 20),
@@ -819,6 +848,7 @@ class _Type2xWidgetState extends State<Type2xWidget> {
               log.info('AnswerType20 : ${at21.questionid} ${at21.choices}');
               log.info('answers : $answers');
             }
+
             var questionType = widget.qm.qmap[widget.qm.questionid].runtimeType;
             if ((questionType == Type21 &&
                     isChecked.fold(0, (e, t) => e + t) > 0) ||
