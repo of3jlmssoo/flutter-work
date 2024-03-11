@@ -258,6 +258,37 @@ class HomeScreen extends ConsumerWidget {
                 },
               ),
               MenuItemButton(
+                child: const Text('Query Count'),
+                onPressed: () async {
+                  log.info('Query Count');
+                  FirebaseFirestore.instance
+                      .collection("30")
+                      .doc('answers')
+                      .collection('2')
+                      .count()
+                      .get()
+                      .then(
+                        (res) => log.info('Query Count : ${res.count}'),
+                        onError: (e) => log.info("Query Count Error: $e"),
+                      );
+
+                  log.info('Query all');
+                  QuerySnapshot snapshot = await FirebaseFirestore.instance
+                      .collectionGroup("yes")
+                      .get();
+
+                  for (int i = 0; i < snapshot.docs.length; i++) {
+                    log.info('Query all : ${snapshot.docs[i].data()}');
+                  }
+
+                  for (var doc in snapshot.docs) {
+                    Map<String, dynamic>? data =
+                        doc.data() as Map<String, dynamic>;
+                    log.info('Query all : ${data["email"]}');
+                  }
+                },
+              ),
+              MenuItemButton(
                 child: const Text('main'),
                 onPressed: () {
                   log.info('main pressed');
@@ -582,29 +613,32 @@ class Type70Widget extends ConsumerWidget {
                     addDocumentType10(answerType.toString(), userinstance,
                         value.questionid, value.yesno == true ? "yes" : "no");
 
-                  case const (AnswerType60) || const (AnswerType70):
-                    log.info('$answerType ${value.questionid} ${value.done}');
-
-                  case const (AnswerType21) || const (AnswerType20):
+                  case const (AnswerType20) || const (AnswerType21):
                     log.info(
                         '$answerType ${value.questionid} ${value.choices}');
                     addDocumentType2x30(answerType.toString(), userinstance,
                         value.questionid, value.choices);
 
-                  case const (AnswerType40):
-                    log.info('$answerType ${value.questionid} ${value.value}');
-
-                  case const (AnswerType31) || const (AnswerType30):
+                  case const (AnswerType30) || const (AnswerType31):
                     log.info(
                         '$answerType ${value.questionid} ${value.choices}  ${value.answerinput}');
                     addDocumentType2x30(answerType.toString(), userinstance,
-                        value.questionid, value.choices);
+                        value.questionid, value.choices, value.answerinput);
 
+                  // Todo: addDocumentType40
+                  case const (AnswerType40):
+                    log.info('$answerType ${value.questionid} ${value.value}');
+
+                  // Todo: addDocumentType50
                   case const (AnswerType50):
                     log.info(
                         '$answerType ${value.questionid} ${value.answerinput}');
                   // case const (AnswerType70):
                   //   log.info('${value.questionid} ${value.done}');
+
+                  // Todo: addDocumentType6070
+                  case const (AnswerType60) || const (AnswerType70):
+                    log.info('$answerType ${value.questionid} ${value.done}');
 
                   default:
                     throw const FormatException(
@@ -621,12 +655,26 @@ class Type70Widget extends ConsumerWidget {
 
   // Todo: process for type30 and type31
   void addDocumentType2x30(String answerType, FirebaseAuth userinstance,
-      String questionid, List<dynamic> values) {
+      String questionid, List<dynamic> values,
+      [String answerinput = '']) {
     for (var v in values) {
       FirebaseFirestore.instance
           .collection(questionid)
           .doc("answers")
           .collection(v.toString())
+          .doc(userinstance.currentUser!.email)
+          .set({
+        "email": userinstance.currentUser!.email,
+      }).onError((e, _) => log.info(
+              "Error writing document: $answerType $questionid $values $e"));
+    }
+
+    if ((answerType == "AnswerType30" || answerType == "AnswerType31") &&
+        answerinput.isNotEmpty) {
+      FirebaseFirestore.instance
+          .collection(questionid)
+          .doc("answers")
+          .collection(answerinput)
           .doc(userinstance.currentUser!.email)
           .set({
         "email": userinstance.currentUser!.email,
