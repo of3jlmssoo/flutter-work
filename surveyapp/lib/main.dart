@@ -163,44 +163,61 @@ class HomeScreen extends ConsumerWidget {
                 },
               ),
               MenuItemButton(
+                child: const Text('Query data'),
+                onPressed: () {
+                  log.info('query data');
+                  FirebaseFirestore.instance
+                      .collection("10")
+                      .doc("answers")
+                      .collection("yes")
+                      .where("email",
+                          isEqualTo: userinstance.currentUser!.email)
+                      .get()
+                      .then(
+                    (querySnapshot) {
+                      log.info("query data --> Successfully completed");
+                      for (var docSnapshot in querySnapshot.docs) {
+                        log.info(
+                            'query data --> ${docSnapshot.id} => ${docSnapshot.data()}');
+                      }
+                    },
+                    onError: (e) => print("Error completing: $e"),
+                  );
+                },
+              ),
+              MenuItemButton(
                 child: const Text('delete data'),
                 onPressed: () {
                   log.info('delete data');
 
-                  // // Query
-                  // FirebaseFirestore.instance
-                  //     .collection("20")
-                  //     .doc("answers")
-                  //     .collection("0")
-                  //     .where("email",
-                  //         isEqualTo: userinstance.currentUser!.email)
-                  //     .get()
-                  //     .then(
-                  //   (querySnapshot) {
-                  //     log.info(
-                  //         "firestore query ${userinstance.currentUser!.email} Successfully completed found ${querySnapshot.size} records");
-                  //     if (querySnapshot.docs.isNotEmpty)
-                  //       for (var docSnapshot in querySnapshot.docs) {
-                  //         log.info(
-                  //             '${docSnapshot.id} => ${docSnapshot.data()}');
-                  //       }
-                  //   },
-                  //   onError: (e) => log.info("Error completing: $e"),
-                  // );
-
                   log.info('keys : ${questions.keys}');
                   for (var k in questions.keys) {
-                    log.info('--> ${questions[k].runtimeType}');
+                    log.info('delete --> ${questions[k].runtimeType}');
                     switch (questions[k].runtimeType) {
                       case const (Type10) || const (Type60) || const (Type70):
-                        log.info('--> AnswerType10/60/70 ');
+                        log.info('delete --> AnswerType10/60/70 ');
                       case const (Type50):
-                        log.info('--> AnswerType50 ');
+                        log.info('delete --> AnswerType50 ');
                       case const (Type30) || const (Type31):
-                        log.info('--> AnswerType30/31 ');
-                      case const (Type20) || const (Type21) || const (Type40):
                         log.info(
-                            '--> AnswerType20/21/40 ${questions[k]!.choices.length}');
+                            'delete --> AnswerType30/31 ${userinstance.currentUser!.email}');
+
+                        FirebaseFirestore.instance
+                            .collection("30")
+                            .doc("answers")
+                            .collection("2")
+                            .doc(userinstance.currentUser!.email)
+                            .delete()
+                            .then(
+                              (doc) => log.info(
+                                  "Document deleted 30/answers/2/${userinstance.currentUser!.email}"),
+                              onError: (e) => log.info(
+                                  "Error delete a document 30/answers/2/${userinstance.currentUser!.email} $e"),
+                            );
+                      case const (Type20) || const (Type21) || const (Type40):
+                        // log.info(
+                        //     'delete --> AnswerType20/21/40 ${questions[k]!.choices.length}');
+                        log.info('delete --> AnswerType20/21/40');
                     }
                   }
 
