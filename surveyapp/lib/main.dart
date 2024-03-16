@@ -510,7 +510,7 @@ class QuestionMain extends StatelessWidget {
   }
 }
 
-class QuestionBottom extends StatelessWidget {
+class QuestionBottom extends StatefulWidget {
   final QuestionMeta qm;
   const QuestionBottom({
     super.key,
@@ -518,28 +518,81 @@ class QuestionBottom extends StatelessWidget {
   });
 
   @override
+  State<QuestionBottom> createState() => _QuestionBottomState();
+}
+
+class _QuestionBottomState extends State<QuestionBottom> {
+  double _currentSliderValue = 50;
+  @override
   Widget build(BuildContext context) {
-    log.info('runtimeType:${qm.qmap[qm.questionid].runtimeType}');
-    return switch (qm.qmap[qm.questionid].runtimeType) {
+    log.info('runtimeType:${widget.qm.qmap[widget.qm.questionid].runtimeType}');
+    return switch (widget.qm.qmap[widget.qm.questionid].runtimeType) {
       const (Type10) => type10Widget(context),
-      const (Type20) => Type2x3xWidget(qm: qm),
-      const (Type21) => Type2x3xWidget(qm: qm),
-      const (Type31) => Type2x3xWidget(qm: qm),
-      // const (Type31) => (const Column(
-      //     children: [
-      //       Row(
-      //         mainAxisAlignment: MainAxisAlignment.center,
-      //         children: [
-      //           Text('abcc'),
-      //         ],
-      //       )
-      //     ],
-      //   )),
-      const (Type50) => Type50Widget(qm: qm),
+      const (Type20) => Type2x3xWidget(qm: widget.qm),
+      const (Type21) => Type2x3xWidget(qm: widget.qm),
+      const (Type31) => Type2x3xWidget(qm: widget.qm),
+      const (Type40) => (Column(
+          children: [
+            // Text('Type40'),
+            const SizedBox(height: 30),
+            Slider(
+              value: _currentSliderValue,
+              min: double.parse(
+                  widget.qm.qmap[widget.qm.questionid]!.values[0].toString()),
+              max: double.parse(
+                  widget.qm.qmap[widget.qm.questionid]!.values[1].toString()),
+              divisions: widget.qm.qmap[widget.qm.questionid]?.values[2],
+              label: _currentSliderValue.round().toString(),
+              onChanged: (double value) {
+                setState(
+                  () {
+                    _currentSliderValue = value;
+                  },
+                );
+                log.info('_QuestionBottomState --> $_currentSliderValue');
+              },
+            ),
+            Text('薦める度 : $_currentSliderValue'),
+            const Text(
+              '(全く勧めない:0 〜 強く勧める:100)',
+              style: TextStyle(color: Colors.grey),
+            ),
+
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(17),
+                ),
+                side: const BorderSide(),
+              ),
+              onPressed: () {
+                AnswerType40 at40 =
+                    AnswerType40(widget.qm.questionid, [_currentSliderValue]);
+                answers[widget.qm.questionid] = at40;
+                log.info('AnswerType40 : ${at40.questionid} ${at40.value}');
+                log.info('answers : $answers');
+                QuestionMeta qmnext = QuestionMeta(
+                    widget.qm.title,
+                    // TODO: now always selext the first choice
+                    // widget.qm.qmap[widget.qm.questionid]!.nexts[0],
+                    widget.qm.qmap[widget.qm.questionid]!.nexts[0],
+                    widget.qm.qmap);
+                log.info('qmnext title:${qmnext.title}');
+                log.info(
+                    '       next:${qmnext.qmap[widget.qm.questionid]!.nexts[0]}');
+                log.info('       qmap:${qmnext.qmap}');
+                context.goNamed("questionmeta", extra: qmnext);
+              },
+              child: const Text('次へ'),
+            ),
+          ],
+        )),
+      const (Type50) => Type50Widget(qm: widget.qm),
       const (Type60) => const Type60Widget(),
       const (Type70) => const Type70Widget(),
-      Type() =>
-        throw UnimplementedError(qm.qmap[qm.questionid].runtimeType.toString()),
+      Type() => throw UnimplementedError(
+          widget.qm.qmap[widget.qm.questionid].runtimeType.toString()),
     };
   }
 
@@ -588,13 +641,13 @@ class QuestionBottom extends StatelessWidget {
   }
 
   void twoChoices(BuildContext context, int i) {
-    log.info('${qm.qmap[qm.questionid]!.nexts}');
-    QuestionMeta qmnext =
-        QuestionMeta(qm.title, qm.qmap[qm.questionid]!.nexts[i], qm.qmap);
+    log.info('${widget.qm.qmap[widget.qm.questionid]!.nexts}');
+    QuestionMeta qmnext = QuestionMeta(widget.qm.title,
+        widget.qm.qmap[widget.qm.questionid]!.nexts[i], widget.qm.qmap);
     context.goNamed("questionmeta", extra: qmnext);
-    AnswerBlock ab = AnswerType10(qm.questionid, i == 0 ? true : false);
+    AnswerBlock ab = AnswerType10(widget.qm.questionid, i == 0 ? true : false);
     // answers.add(ab);
-    answers[qm.questionid] = ab;
+    answers[widget.qm.questionid] = ab;
     log.info('two choices ${ab.questionid} ${ab.yesno} $answers');
   }
 }
