@@ -522,9 +522,9 @@ class QuestionBottom extends StatelessWidget {
     log.info('runtimeType:${qm.qmap[qm.questionid].runtimeType}');
     return switch (qm.qmap[qm.questionid].runtimeType) {
       const (Type10) => type10Widget(context),
-      const (Type20) => Type2xWidget(qm: qm),
-      const (Type21) => Type2xWidget(qm: qm),
-      const (Type31) => Type2xWidget(qm: qm),
+      const (Type20) => Type2x3xWidget(qm: qm),
+      const (Type21) => Type2x3xWidget(qm: qm),
+      const (Type31) => Type2x3xWidget(qm: qm),
       // const (Type31) => (const Column(
       //     children: [
       //       Row(
@@ -633,13 +633,13 @@ class Type70Widget extends ConsumerWidget {
                   case const (AnswerType20) || const (AnswerType21):
                     log.info(
                         '$answerType ${value.questionid} ${value.choices}');
-                    addDocumentType2x30(answerType.toString(), userinstance,
+                    addDocumentType2x3x(answerType.toString(), userinstance,
                         value.questionid, value.choices);
 
                   case const (AnswerType30) || const (AnswerType31):
                     log.info(
                         '$answerType ${value.questionid} ${value.choices}  ${value.answerinput}');
-                    addDocumentType2x30(answerType.toString(), userinstance,
+                    addDocumentType2x3x(answerType.toString(), userinstance,
                         value.questionid, value.choices, value.answerinput);
 
                   // Todo: addDocumentType40
@@ -671,7 +671,7 @@ class Type70Widget extends ConsumerWidget {
   }
 
   // Todo: process for type30 and type31
-  void addDocumentType2x30(String answerType, FirebaseAuth userinstance,
+  void addDocumentType2x3x(String answerType, FirebaseAuth userinstance,
       String questionid, List<dynamic> values,
       [String answerinput = '']) {
     for (var v in values) {
@@ -686,6 +686,8 @@ class Type70Widget extends ConsumerWidget {
               "Error writing document: $answerType $questionid $values $e"));
     }
 
+    log.info(
+        'addDocumentType2x3x--> $questionid / answers / $answerinput / ${userinstance.currentUser!.email}');
     if ((answerType == "AnswerType30" || answerType == "AnswerType31") &&
         answerinput.isNotEmpty) {
       FirebaseFirestore.instance
@@ -797,8 +799,8 @@ class Type60Widget extends StatelessWidget {
   }
 }
 
-class Type2xWidget extends ConsumerStatefulWidget {
-  const Type2xWidget({
+class Type2x3xWidget extends ConsumerStatefulWidget {
+  const Type2x3xWidget({
     super.key,
     required this.qm,
   });
@@ -806,10 +808,10 @@ class Type2xWidget extends ConsumerStatefulWidget {
   final QuestionMeta qm;
 
   @override
-  ConsumerState<Type2xWidget> createState() => _Type2xWidgetState();
+  ConsumerState<Type2x3xWidget> createState() => _Type2x3xWidgetState();
 }
 
-class _Type2xWidgetState extends ConsumerState<Type2xWidget> {
+class _Type2x3xWidgetState extends ConsumerState<Type2x3xWidget> {
   final ScrollController _firstController = ScrollController();
   @override
   Widget build(BuildContext context) {
@@ -861,9 +863,12 @@ class _Type2xWidgetState extends ConsumerState<Type2xWidget> {
           ),
         ),
         const SizedBox(height: 20),
+
+        // Type3xの場合、銘柄入力欄を表示する
         Visibility(
-          // visible: ref.watch(type31InputProvider) == true ? true : false,
-          visible: widget.qm.qmap[widget.qm.questionid].runtimeType == Type31
+          visible: (widget.qm.qmap[widget.qm.questionid].runtimeType ==
+                      Type30) ||
+                  (widget.qm.qmap[widget.qm.questionid].runtimeType == Type31)
               ? true
               : false,
           child: Container(
@@ -896,6 +901,8 @@ class _Type2xWidgetState extends ConsumerState<Type2xWidget> {
             ),
             side: const BorderSide(),
           ),
+
+          // 次へボタンが押された場合、次の画面へ遷移する
           onPressed: () {
             List<int> selected = [];
             for (int i = 0; i < isChecked.length; i++) {
@@ -932,22 +939,20 @@ class _Type2xWidgetState extends ConsumerState<Type2xWidget> {
             }
             var questionType = widget.qm.qmap[widget.qm.questionid].runtimeType;
 
-            log.info(
-                'questionType : $questionType, isChecked.last ${isChecked.last} userinputTicker.length ${userinputTicker.length}');
             if ((questionType == Type21 &&
                     isChecked.fold(0, (e, t) => e + t) > 0) ||
                 (questionType == Type20 &&
                     isChecked.fold(0, (e, t) => e + t) == 1) ||
                 (questionType == Type31 &&
-                        isChecked.fold(0, (e, t) => e + t) > 0 &&
-                        isChecked.last == 1
-                    ? userinputTicker.length > 0
-                    : true) ||
+                    isChecked.fold(0, (e, t) => e + t) > 0 &&
+                    (isChecked.last == 1
+                        ? userinputTicker.length > 0
+                        : true)) ||
                 (questionType == Type30 &&
-                        isChecked.fold(0, (e, t) => e + t) == 1 &&
-                        isChecked.last == 1
-                    ? userinputTicker.length > 0
-                    : true)) {
+                    isChecked.fold(0, (e, t) => e + t) == 1 &&
+                    (isChecked.last == 1
+                        ? userinputTicker.length > 0
+                        : true))) {
               log.info(
                   'nexts          : ${widget.qm.qmap[widget.qm.questionid]!.nexts}');
               log.info('isChecked : $isChecked');
