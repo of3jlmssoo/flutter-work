@@ -148,7 +148,7 @@ class HomeScreen extends ConsumerWidget {
                 onPressed: () {
                   AnswerBlock ab1 = AnswerType10("10", true);
                   log.info('${ab1.runtimeType} ${ab1.toJson()}');
-                  AnswerBlock ab2 = AnswerType40("41", ["10"]);
+                  AnswerBlock ab2 = AnswerType40("41", [10]);
                   log.info('${ab2.runtimeType} ${ab2.toJson()}');
                   log.info(runtimeType.toString());
                   log.info(title);
@@ -567,8 +567,8 @@ class _QuestionBottomState extends State<QuestionBottom> {
                 side: const BorderSide(),
               ),
               onPressed: () {
-                AnswerType40 at40 =
-                    AnswerType40(widget.qm.questionid, [_currentSliderValue]);
+                AnswerType40 at40 = AnswerType40(
+                    widget.qm.questionid, [_currentSliderValue.toInt()]);
                 answers[widget.qm.questionid] = at40;
                 log.info('AnswerType40 : ${at40.questionid} ${at40.value}');
                 log.info('answers : $answers');
@@ -698,11 +698,15 @@ class Type70Widget extends ConsumerWidget {
                   // Todo: addDocumentType40
                   case const (AnswerType40):
                     log.info('$answerType ${value.questionid} ${value.value}');
+                    addDocumentType40(answerType.toString(), userinstance,
+                        value.questionid, value.value[0]);
 
                   // Todo: addDocumentType50
                   case const (AnswerType50):
                     log.info(
                         '$answerType ${value.questionid} ${value.answerinput}');
+                    addDocumentType50(answerType.toString(), userinstance,
+                        value.questionid, value.answerinput);
                   // case const (AnswerType70):
                   //   log.info('${value.questionid} ${value.done}');
 
@@ -753,6 +757,33 @@ class Type70Widget extends ConsumerWidget {
       }).onError((e, _) => log.info(
               "Error writing document: $answerType $questionid $values $e"));
     }
+  }
+
+  void addDocumentType40(String answerType, FirebaseAuth userinstance,
+      String questionid, int value) {
+    FirebaseFirestore.instance
+        .collection(questionid)
+        .doc("answers")
+        .collection(value.toString())
+        .doc(userinstance.currentUser!.email)
+        .set({
+      "email": userinstance.currentUser!.email,
+    }).onError((e, _) => log
+            .info("Error writing document: $answerType $questionid $value $e"));
+  }
+
+  void addDocumentType50(String answerType, FirebaseAuth userinstance,
+      String questionid, String answerinput) {
+    FirebaseFirestore.instance
+        .collection(questionid)
+        .doc("answers")
+        .collection(userinstance.currentUser!.email as String)
+        .doc(userinstance.currentUser!.email)
+        .set({
+      "email": userinstance.currentUser!.email,
+      "answerinput": answerinput,
+    }).onError((e, _) => log.info(
+            "Error writing document: $answerType $questionid $answerinput $e"));
   }
 
   void addDocumentType10(String answerType, FirebaseAuth userinstance,

@@ -122,7 +122,7 @@ class AnswerType31 extends AnswerBlock {
 
 class AnswerType40 extends AnswerBlock {
   final String questionid;
-  final List<dynamic> value;
+  final List<int> value;
   AnswerType40(this.questionid, this.value);
 }
 
