@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
+import 'package:surveyapp/providers.dart';
 
 import 'answers.dart';
 import 'firebase_login.dart';
@@ -660,6 +661,7 @@ class Type70Widget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userinstance = ref.watch(firebaseAuthProvider);
+    final sendResult = ref.watch(sendProvider);
     return Column(
       children: [
         const SizedBox(height: 20),
@@ -671,56 +673,70 @@ class Type70Widget extends ConsumerWidget {
             ),
             side: const BorderSide(),
           ),
-          onPressed: () {
-            log.info('Type70 answers:$answers');
-            answers.forEach(
-              (key, value) {
-                log.info('key $key and value $value and ${value.runtimeType}');
-                var answerType = value.runtimeType;
-                switch (answerType) {
-                  case const (AnswerType10):
-                    log.info('$answerType ${value.questionid} ${value.yesno}');
-                    addDocumentType10(answerType.toString(), userinstance,
-                        value.questionid, value.yesno == true ? "yes" : "no");
+          onPressed: sendResult
+              ? null
+              : () {
+                  log.info('Type70 answers:$answers');
+                  answers.forEach(
+                    (key, value) {
+                      log.info(
+                          'key $key and value $value and ${value.runtimeType}');
+                      var answerType = value.runtimeType;
+                      switch (answerType) {
+                        case const (AnswerType10):
+                          log.info(
+                              '$answerType ${value.questionid} ${value.yesno}');
+                          addDocumentType10(
+                              answerType.toString(),
+                              userinstance,
+                              value.questionid,
+                              value.yesno == true ? "yes" : "no");
 
-                  case const (AnswerType20) || const (AnswerType21):
-                    log.info(
-                        '$answerType ${value.questionid} ${value.choices}');
-                    addDocumentType2x3x(answerType.toString(), userinstance,
-                        value.questionid, value.choices);
+                        case const (AnswerType20) || const (AnswerType21):
+                          log.info(
+                              '$answerType ${value.questionid} ${value.choices}');
+                          addDocumentType2x3x(answerType.toString(),
+                              userinstance, value.questionid, value.choices);
 
-                  case const (AnswerType30) || const (AnswerType31):
-                    log.info(
-                        '$answerType ${value.questionid} ${value.choices}  ${value.answerinput}');
-                    addDocumentType2x3x(answerType.toString(), userinstance,
-                        value.questionid, value.choices, value.answerinput);
+                        case const (AnswerType30) || const (AnswerType31):
+                          log.info(
+                              '$answerType ${value.questionid} ${value.choices}  ${value.answerinput}');
+                          addDocumentType2x3x(
+                              answerType.toString(),
+                              userinstance,
+                              value.questionid,
+                              value.choices,
+                              value.answerinput);
 
-                  // Todo: addDocumentType40
-                  case const (AnswerType40):
-                    log.info('$answerType ${value.questionid} ${value.value}');
-                    addDocumentType40(answerType.toString(), userinstance,
-                        value.questionid, value.value[0]);
+                        // Todo: addDocumentType40
+                        case const (AnswerType40):
+                          log.info(
+                              '$answerType ${value.questionid} ${value.value}');
+                          addDocumentType40(answerType.toString(), userinstance,
+                              value.questionid, value.value[0]);
 
-                  // Todo: addDocumentType50
-                  case const (AnswerType50):
-                    log.info(
-                        '$answerType ${value.questionid} ${value.answerinput}');
-                    addDocumentType50(answerType.toString(), userinstance,
-                        value.questionid, value.answerinput);
-                  // case const (AnswerType70):
-                  //   log.info('${value.questionid} ${value.done}');
+                        // Todo: addDocumentType50
+                        case const (AnswerType50):
+                          log.info(
+                              '$answerType ${value.questionid} ${value.answerinput}');
+                          addDocumentType50(answerType.toString(), userinstance,
+                              value.questionid, value.answerinput);
+                        // case const (AnswerType70):
+                        //   log.info('${value.questionid} ${value.done}');
 
-                  // Todo: addDocumentType6070
-                  case const (AnswerType60) || const (AnswerType70):
-                    log.info('$answerType ${value.questionid} ${value.done}');
+                        // Todo: addDocumentType6070
+                        case const (AnswerType60) || const (AnswerType70):
+                          log.info(
+                              '$answerType ${value.questionid} ${value.done}');
 
-                  default:
-                    throw const FormatException(
-                        'Invalid when sending data to firestore');
-                }
-              },
-            );
-          },
+                        default:
+                          throw const FormatException(
+                              'Invalid when sending data to firestore');
+                      }
+                    },
+                  );
+                  ref.read(sendProvider.notifier).sent();
+                },
           child: const Text('送信'),
         ),
       ],
