@@ -211,9 +211,45 @@ class HomeScreen extends ConsumerWidget {
                                     "Q(T20/21)  Error query questions item: $e"),
                               );
                         }
-                        ;
 
                       case const (Type30) || const (Type31):
+                        final int num = value.choices.length;
+                        for (int i = 0; i < num; i++) {
+                          log.info(
+                              'Q(T30/31) questionid:${value.questionid} $i');
+                          FirebaseFirestore.instance
+                              .collection(value.questionid)
+                              .doc("answers")
+                              .collection(i.toString())
+                              .count()
+                              .get()
+                              .then(
+                                (res) => log.info(
+                                    'Q(T30/31) questionid:${value.questionid} answer:$i  count:${res.count}'),
+                                onError: (e) => log.info(
+                                    "Q(T30/31)  Error query questions item: $e"),
+                              );
+                        }
+                        FirebaseFirestore.instance
+                            .collection(value.questionid.toString())
+                            // .doc("answers")
+                            // .collection("others")
+                            .get()
+                            .then(
+                          (querySnapshot) {
+                            log.info(
+                                "--> Q(T30/31) Successfully completed ${value.questionid} ${querySnapshot.docs}");
+                            for (var docSnapshot in querySnapshot.docs) {
+                              log.info(
+                                  '--> Q(T30/31) ${docSnapshot.id} => ${docSnapshot.data()}');
+                            }
+                            log.info(
+                                "--> Q(T30/31) Successfully completed ${value.questionid}");
+                          },
+                          onError: (e) =>
+                              log.info("--> Q(T30/31) Error completing: $e"),
+                        );
+
                       case const (Type40):
                       case const (Type50):
                     }
@@ -779,7 +815,7 @@ class Type70Widget extends ConsumerWidget {
 
                         case const (AnswerType30) || const (AnswerType31):
                           log.info(
-                              '$answerType ${value.questionid} ${value.choices}  ${value.answerinput}');
+                              '$answerType ${value.questionid} add${value.choices}  ${value.answerinput}');
                           addDocumentType2x3x(
                               answerType.toString(),
                               userinstance,
@@ -845,7 +881,9 @@ class Type70Widget extends ConsumerWidget {
       FirebaseFirestore.instance
           .collection(questionid)
           .doc("answers")
-          .collection(answerinput)
+          .collection("others")
+          .doc(answerinput)
+          .collection("ids")
           .doc(userinstance.currentUser!.email)
           .set({
         "email": userinstance.currentUser!.email,
