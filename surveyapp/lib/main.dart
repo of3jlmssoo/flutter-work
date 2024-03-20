@@ -143,19 +143,79 @@ class HomeScreen extends ConsumerWidget {
                     log.info('${b.questionid} ${b.text}');
                   }
                 },
-                child: const Text('document'),
+                child: const Text('check questions'),
               ),
               MenuItemButton(
                 onPressed: () {
-                  AnswerBlock ab1 = AnswerType10("10", true);
-                  log.info('${ab1.runtimeType} ${ab1.toJson()}');
-                  AnswerBlock ab2 = AnswerType40("41", [10]);
-                  log.info('${ab2.runtimeType} ${ab2.toJson()}');
-                  log.info(runtimeType.toString());
-                  log.info(title);
-                  log.info('answer checked');
+                  answers.forEach((key, value) {
+                    var answerType = value.runtimeType;
+                    switch (answerType) {
+                      case const (AnswerType10) ||
+                            const (AnswerType60) ||
+                            const (AnswerType70):
+                      case const (AnswerType20) || const (AnswerType21):
+                      case const (AnswerType30) || const (AnswerType31):
+                      case const (AnswerType40):
+                      case const (AnswerType50):
+                    }
+                  });
                 },
                 child: const Text('answer check'),
+              ),
+              MenuItemButton(
+                onPressed: () {
+                  questions.forEach((key, value) {
+                    var questionType = value.runtimeType;
+                    switch (questionType) {
+                      case const (Type10) || const (Type60) || const (Type70):
+                        FirebaseFirestore.instance
+                            .collection(value.questionid)
+                            .doc("answers")
+                            .collection("yes")
+                            .count()
+                            .get()
+                            .then(
+                              (res) => log.info(
+                                  'questionid:${value.questionid} yes count:${res.count}'),
+                              onError: (e) =>
+                                  log.info("Error query questions item: $e"),
+                            );
+                        FirebaseFirestore.instance
+                            .collection(value.questionid)
+                            .doc("answers")
+                            .collection("no")
+                            .count()
+                            .get()
+                            .then(
+                              (res) => log.info(
+                                  'questionid:${value.questionid} no  count:${res.count}'),
+                              onError: (e) =>
+                                  log.info("Error query questions item: $e"),
+                            );
+
+                      case const (Type20) || const (Type21):
+                      case const (Type30) || const (Type31):
+                      case const (Type40):
+                      case const (Type50):
+                    }
+                  });
+                },
+                child: const Text('query questions item'),
+              ),
+              MenuItemButton(
+                onPressed: () {
+                  questions.forEach((key, value) {
+                    var questionType = value.runtimeType;
+                    switch (questionType) {
+                      case const (Type10) || const (Type60) || const (Type70):
+                      case const (Type20) || const (Type21):
+                      case const (Type30) || const (Type31):
+                      case const (Type40):
+                      case const (Type50):
+                    }
+                  });
+                },
+                child: const Text('query questions item 2'),
               ),
               MenuItemButton(
                 child: const Text('check if existing after login'),
