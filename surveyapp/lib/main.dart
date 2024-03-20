@@ -176,9 +176,9 @@ class HomeScreen extends ConsumerWidget {
                             .get()
                             .then(
                               (res) => log.info(
-                                  'questionid:${value.questionid} yes count:${res.count}'),
-                              onError: (e) =>
-                                  log.info("Error query questions item: $e"),
+                                  'Q(T10/60/70) questionid:${value.questionid} yes count:${res.count}'),
+                              onError: (e) => log.info(
+                                  "Q(T10/60/70) Error query questions item: $e"),
                             );
                         FirebaseFirestore.instance
                             .collection(value.questionid)
@@ -188,12 +188,31 @@ class HomeScreen extends ConsumerWidget {
                             .get()
                             .then(
                               (res) => log.info(
-                                  'questionid:${value.questionid} no  count:${res.count}'),
-                              onError: (e) =>
-                                  log.info("Error query questions item: $e"),
+                                  'Q(T10/60/70) questionid:${value.questionid} no  count:${res.count}'),
+                              onError: (e) => log.info(
+                                  "Q(T10/60/70) Error query questions item: $e"),
                             );
 
                       case const (Type20) || const (Type21):
+                        final int num = value.choices.length;
+                        for (int i = 0; i < num; i++) {
+                          log.info(
+                              'Q(T20/21) questionid:${value.questionid} $i');
+                          FirebaseFirestore.instance
+                              .collection(value.questionid)
+                              .doc("answers")
+                              .collection(i.toString())
+                              .count()
+                              .get()
+                              .then(
+                                (res) => log.info(
+                                    'Q(T20/21) questionid:${value.questionid} answer:$i  count:${res.count}'),
+                                onError: (e) => log.info(
+                                    "Q(T20/21)  Error query questions item: $e"),
+                              );
+                        }
+                        ;
+
                       case const (Type30) || const (Type31):
                       case const (Type40):
                       case const (Type50):
