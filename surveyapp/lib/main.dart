@@ -243,10 +243,10 @@ class HomeScreen extends ConsumerWidget {
                             .then(
                           (querySnapshot) {
                             log.info(
-                                "--> Q(T30/31) Successfully completed ${value.questionid} ${querySnapshot.docs}");
+                                "Q(T30/31) Successfully completed ${value.questionid} ${querySnapshot.docs}");
                             for (var docSnapshot in querySnapshot.docs) {
                               log.info(
-                                  '--> Q(T30/31) ${docSnapshot.id} => ${docSnapshot.data()}');
+                                  'Q(T30/31) ${docSnapshot.id} => ${docSnapshot.data()}');
                               //
                               FirebaseFirestore.instance
                                   .collection(value.questionid)
@@ -258,50 +258,58 @@ class HomeScreen extends ConsumerWidget {
                                   .then(
                                 (querySnapshot2) {
                                   log.info(
-                                      "-----> Q(T30/31)1 Successfully completed ${value.questionid} ${querySnapshot2.docs}");
-                                  for (var docSnapshot2 in querySnapshot2.docs) {
+                                      "Q(T30/31)1 Successfully completed ${value.questionid} ${querySnapshot2.docs}");
+                                  for (var docSnapshot2
+                                      in querySnapshot2.docs) {
                                     log.info(
-                                        '-----> Q(T30/31)2 ${docSnapshot.id} ${docSnapshot2.id} => ${docSnapshot2.data()}');
-                                    // FirebaseFirestore.instance
-                                    //     .collection(value.questionid)
-                                    //     .doc("answers")
-                                    //     .collection("others")
-                                    //     .doc(docSnapshot2.id)
-                                    //     .collection("ids")
-                                    //     .get()
-                                    //     .then(
-                                    //   ////////////////
-                                    //   (querySnapshot3) {
-                                    //     log.info(
-                                    //         "-----> Q(T30/31)3 Successfully completed ${value.questionid} ${querySnapshot3.docs}");
-                                    //     for (var docSnapshot3
-                                    //         in querySnapshot3.docs) {
-                                    //       log.info(
-                                    //           '-----> Q(T30/31)4 ${docSnapshot3.id} => ${docSnapshot3.data()}');
-                                    //     }
-                                    //     log.info(
-                                    //         "-----> Q(T30/31) Successfully completed ${value.questionid}");
-                                    //   },
-                                    //   onError: (e) => log.info(
-                                    //       "-----> Q(T30/31) Error completing: $e"),
-                                    //   ////////////////
-                                    // );
+                                        'Q(T30/31)2 ${docSnapshot.id} ${docSnapshot2.id} => ${docSnapshot2.data()}');
                                   }
                                   log.info(
-                                      "--> Q(T30/31) Successfully completed ${value.questionid}");
+                                      "Q(T30/31) Successfully completed ${value.questionid}");
                                 },
-                                onError: (e) => log
-                                    .info("--> Q(T30/31) Error completing: $e"),
+                                onError: (e) =>
+                                    log.info("Q(T30/31) Error completing: $e"),
                               );
                             }
                             log.info(
-                                "--> Q(T30/31) Successfully completed ${value.questionid}");
+                                "Q(T30/31) Successfully completed ${value.questionid}");
                           },
                           onError: (e) =>
-                              log.info("--> Q(T30/31) Error completing: $e"),
+                              log.info("Q(T30/31) Error completing: $e"),
                         );
 
                       case const (Type40):
+                        // > 41 > answers >70 > mailx@mail.com
+                        log.info(
+                            '--> Q(T40) questionid:${value.questionid} ${value.values}');
+
+                        var i = value.values[0];
+                        while (i <= value.values[1]) {
+                          log.info(
+                              '--> Q(T40) questionid:${value.questionid} i:$i');
+                          var ii = i;
+                          FirebaseFirestore.instance
+                              .collection(value.questionid)
+                              .doc("answers")
+                              .collection(i.toString())
+                              .count()
+                              .get()
+                              .then(
+                            (res) {
+                              log.info(
+                                  "==> Q(T40) Successfully completed i:$i ii:$ii ${res.count}");
+                            },
+                            onError: (e) =>
+                                log.info("--> Q(T40) Error completing: $e"),
+                          );
+
+                          i = i + value.values[2];
+                        }
+                      // 追記欄処理
+                      // > 41 > answers > 50 > LMT > mailx@mail.com
+                      //
+                      // collection othersでquery all
+
                       case const (Type50):
                     }
                   });
@@ -1128,7 +1136,7 @@ class _Type2x3xWidgetState extends ConsumerState<Type2x3xWidget> {
                         isChecked[i] = v == true ? 1 : 0;
                         log.info('_isChecked : $isChecked');
                       });
-                      log.info('-------> ${isChecked.last}');
+                      log.info('${isChecked.last}');
                       // isChecked.last == 1
                       //     ? ref.read(type31InputProvider.notifier).toTrue()
                       //     : ref.read(type31InputProvider.notifier).toFalse();
