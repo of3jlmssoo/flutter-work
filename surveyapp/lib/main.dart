@@ -231,9 +231,9 @@ class HomeScreen extends ConsumerWidget {
                               );
                         }
                         FirebaseFirestore.instance
-                            .collection(value.questionid.toString())
-                            // .doc("answers")
-                            // .collection("others")
+                            .collection(value.questionid)
+                            .doc("answers")
+                            .collection("others")
                             .get()
                             .then(
                           (querySnapshot) {
@@ -878,6 +878,15 @@ class Type70Widget extends ConsumerWidget {
         'addDocumentType2x3x--> $questionid / answers / $answerinput / ${userinstance.currentUser!.email}');
     if ((answerType == "AnswerType30" || answerType == "AnswerType31") &&
         answerinput.isNotEmpty) {
+      FirebaseFirestore.instance
+          .collection(questionid)
+          .doc("answers")
+          .collection("others")
+          .doc(answerinput)
+          .set({
+        "ticker": answerinput,
+      }).onError((e, _) => log.info(
+              "Error writing document: $answerType $questionid $values $e"));
       FirebaseFirestore.instance
           .collection(questionid)
           .doc("answers")
