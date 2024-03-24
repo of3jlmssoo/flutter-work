@@ -213,6 +213,7 @@ class HomeScreen extends ConsumerWidget {
                         }
 
                       case const (Type30) || const (Type31):
+                        // 選択肢部分を処理する
                         final int num = value.choices.length;
                         for (int i = 0; i < num; i++) {
                           log.info(
@@ -230,6 +231,10 @@ class HomeScreen extends ConsumerWidget {
                                     "Q(T30/31)  Error query questions item: $e"),
                               );
                         }
+                        // 追記欄処理
+                        // > 42 > answers > others > LMT > ids > mailx@mail.com
+                        //
+                        // collection othersでquery all
                         FirebaseFirestore.instance
                             .collection(value.questionid)
                             .doc("answers")
@@ -242,6 +247,52 @@ class HomeScreen extends ConsumerWidget {
                             for (var docSnapshot in querySnapshot.docs) {
                               log.info(
                                   '--> Q(T30/31) ${docSnapshot.id} => ${docSnapshot.data()}');
+                              //
+                              FirebaseFirestore.instance
+                                  .collection(value.questionid)
+                                  .doc("answers")
+                                  .collection("others")
+                                  .doc(docSnapshot.id)
+                                  .collection("ids")
+                                  .get()
+                                  .then(
+                                (querySnapshot2) {
+                                  log.info(
+                                      "-----> Q(T30/31)1 Successfully completed ${value.questionid} ${querySnapshot2.docs}");
+                                  for (var docSnapshot2 in querySnapshot2.docs) {
+                                    log.info(
+                                        '-----> Q(T30/31)2 ${docSnapshot.id} ${docSnapshot2.id} => ${docSnapshot2.data()}');
+                                    // FirebaseFirestore.instance
+                                    //     .collection(value.questionid)
+                                    //     .doc("answers")
+                                    //     .collection("others")
+                                    //     .doc(docSnapshot2.id)
+                                    //     .collection("ids")
+                                    //     .get()
+                                    //     .then(
+                                    //   ////////////////
+                                    //   (querySnapshot3) {
+                                    //     log.info(
+                                    //         "-----> Q(T30/31)3 Successfully completed ${value.questionid} ${querySnapshot3.docs}");
+                                    //     for (var docSnapshot3
+                                    //         in querySnapshot3.docs) {
+                                    //       log.info(
+                                    //           '-----> Q(T30/31)4 ${docSnapshot3.id} => ${docSnapshot3.data()}');
+                                    //     }
+                                    //     log.info(
+                                    //         "-----> Q(T30/31) Successfully completed ${value.questionid}");
+                                    //   },
+                                    //   onError: (e) => log.info(
+                                    //       "-----> Q(T30/31) Error completing: $e"),
+                                    //   ////////////////
+                                    // );
+                                  }
+                                  log.info(
+                                      "--> Q(T30/31) Successfully completed ${value.questionid}");
+                                },
+                                onError: (e) => log
+                                    .info("--> Q(T30/31) Error completing: $e"),
+                              );
                             }
                             log.info(
                                 "--> Q(T30/31) Successfully completed ${value.questionid}");
@@ -297,7 +348,7 @@ class HomeScreen extends ConsumerWidget {
                             'query data --> ${docSnapshot.id} => ${docSnapshot.data()}');
                       }
                     },
-                    onError: (e) => print("Error completing: $e"),
+                    onError: (e) => log.info("query data Error completing: $e"),
                   );
                 },
               ),
