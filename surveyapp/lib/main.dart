@@ -311,6 +311,35 @@ class HomeScreen extends ConsumerWidget {
                       // collection othersでquery all
 
                       case const (Type50):
+                        FirebaseFirestore.instance
+                            .collection("USERS")
+                            .get()
+                            .then(
+                          (querySnapshot) {
+                            for (var docSnapshot in querySnapshot.docs) {
+                              log.info(
+                                  '--> Q(T50) ${docSnapshot.id} => ${docSnapshot.data()}');
+
+                              final docRef = FirebaseFirestore.instance
+                                  .collection("50")
+                                  .doc("answers")
+                                  .collection(docSnapshot.id)
+                                  .doc(docSnapshot.id);
+
+                              docRef.get().then(
+                                (DocumentSnapshot doc) {
+                                  final data =
+                                      doc.data() as Map<String, dynamic>;
+                                  log.info('--> Q(T50) ${data["answerinput"]}');
+                                },
+                                onError: (e) => log.info(
+                                    "--> Q(T50) Error getting document: $e"),
+                              );
+                            }
+                          },
+                          onError: (e) =>
+                              log.info("--> Q(T50) Error completing: $e"),
+                        );
                     }
                   });
                 },
